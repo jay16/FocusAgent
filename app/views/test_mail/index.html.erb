@@ -1,0 +1,29 @@
+<div class="span10 offset1">
+
+	<table class="table table-bordered table-striped">
+	    <thead>
+	      <tr>
+		 <td>index</td>
+		 <td>campaign id</td>
+		 <td>domain</td>
+		 <td>eml_file</td>
+		 <td>email</td>
+		 <td>mqpath</td>
+	      </tr>
+	    </thead>
+	    <% @test_mails.each_with_index do |test,index| %>
+	      <tr>
+		 <td><%= index %></td>
+		 <td><%= test.campaign_id %></td>
+		 <td><%= test.domain %></td>
+		 <td><%= test.eml_file %></td>
+		 <td><%= test.email %></td>
+		 <td><%= test.mqpath %></td>
+
+	      </tr>
+	      <tr>
+		 <td colspan="6"><%= test.log_cm ? test.log_cm[0..200] : nil %></td>
+	      </tr>
+	    <% end %>
+	</table>
+</div>

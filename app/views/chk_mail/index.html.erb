@@ -1,0 +1,40 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+          <div class="span2">
+          </div>
+          <div class="span10">
+                <div class="tabbable tabs-left">
+                   <ul class="nav nav-tabs">
+                     <% @tasks.each_with_index do |task,index| %>
+                         <li class="<%= index == 0 ? 'active' : '' %>">
+                             <a data-toggle="tab" href="#tab_<%= index %>"><%= File.basename(task) %></a>
+                         </li>
+                         
+                     <% end %>
+                     <li> <a href="#new_mail_modal" role="button" data-toggle="modal">New Mail</a></li>
+                     <li> <a onclick="paginate('.tab-pane','p');">Paginate</a></li>
+                     
+                   </ul>
+                   
+                   <div class="tab-content">
+                      <% @tasks.each_with_index do |task,index| %>
+                          <div id="tab_<%= index %>" class="tab-pane <%= index == 0 ? 'active' : '' %>">
+                             <table class="table">
+                               <% cal_result(task).each do |row| %>
+                               <tr>
+                                    <td><%= File.basename(row[2])%></td>
+                                    <td><%= row[0] %></td>
+                                    <td><%= row[1] %></td>
+                                    <td><%= row[2] %></td>
+                               </tr>
+                               <% end %>
+                             </table>
+                          </div>
+                      <% end %>
+                   </div>
+                </div>
+          </div>
+          
+          
+    </div>
+</div>

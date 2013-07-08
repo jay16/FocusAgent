@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  idstr: MyString
+  issue: MyString
+  pid: 1
+  port: 1
+  rails: MyString
+  ruby: MyString
+  gem: MyString
+  user: MyString
+  time_zone: MyString
+  selinux: false
+  iptables: MyText
+  volume: 1.5
+  used: 1.5
+  online: 
+
+two:
+  idstr: MyString
+  issue: MyString
+  pid: 1
+  port: 1
+  rails: MyString
+  ruby: MyString
+  gem: MyString
+  user: MyString
+  time_zone: MyString
+  selinux: false
+  iptables: MyText
+  volume: 1.5
+  used: 1.5
+  online: 

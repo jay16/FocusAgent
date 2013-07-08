@@ -1,0 +1,83 @@
+<% resque = Resque %>
+
+<h4>Queues</h4>
+
+  <table class='table table-bordered table-striped'>
+    <thead>
+      <tr>
+	<th>Name</th>
+	<th>Jobs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% resque.queues.sort_by { |q| q.to_s }.each do |queue| %>
+	<tr>
+	  <td class='queue'><a class="queue" href="<%= u "queues/#{queue}" %>"><%= queue %></a></td>
+	  <td class='size'><%= resque.size queue %></td>
+	</tr>
+      <% end %>
+      <% if failed_multiple_queues? %>
+	<% Resque::Failure.queues.sort_by { |q| q.to_s }.each_with_index do |queue, i| %>
+	<tr class="<%= Resque::Failure.count(queue).zero? ? "failed" : "failure" %><%= " first_failure" if i.zero? %>">
+	  <td class='queue failed'><a class="queue" href="<%= u "failed/#{queue}" %>"><%= queue %></a></td>
+	  <td class='size'><%= Resque::Failure.count(queue) %></td>
+	</tr>
+	<% end %>
+      <% else %>
+	<tr class="<%= Resque::Failure.count.zero? ? "failed" : "failure" %>">
+	  <td class='queue failed'><a class="queue" href="<%= u :failed %>">failed</a></td>
+	  <td class='size'><%= Resque::Failure.count %></td>
+	</tr>
+      <% end %>
+    </tbody>
+   </table>
+
+<!--worker------------------------------------------------------------>
+
+  <%
+    workers = resque.working
+    jobs = workers.collect {|w| w.job }
+    worker_jobs = workers.zip(jobs)
+    worker_jobs = worker_jobs.reject { |w, j| w.idle? }
+  %>
+
+  <h4><%= worker_jobs.size %> of <%= resque.workers.size %> Workers Working</h4>
+
+  <table class='table table-bordered table-striped'>
+    <thead> 
+      <tr>
+	<th>&nbsp;</th>
+	<th>Where</th>
+	<th>Queue</th>
+	<th>Processing</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <% if worker_jobs.empty? %>
+      <tr>
+	<td colspan="4" style="text-align:center;">Nothing is happening right now...</td>
+      </tr>
+      <% end %>
+
+      <% worker_jobs.sort_by {|w, j| j['run_at'] ? j['run_at'] : '' }.each do |worker, job| %>
+	<tr>
+	  <td class='icon'><img src="<%=u state = worker.state %>.png" alt="<%= state %>" title="<%= state %>"></td>
+	  <% host, pid, queues = worker.to_s.split(':') %>
+	  <td class='where'><a href="<%=u "/workers/#{worker}" %>"><%= host %>:<%= pid %></a></td>
+	  <td class='queues queue'>
+	    <a class="queue-tag" href="<%=u "/queues/#{job['queue']}" %>"><%= job['queue'] %></a>
+	  </td>
+	  <td class='process'>
+	    <% if job['queue'] %>
+	      <code><%= job['payload']['class'] %></code>
+	      <small><a class="queue time" href="<%=u "/working/#{worker}" %>"><%= job['run_at'] %></a></small>
+	    <% else %>
+	      <span class='waiting' style="text-align:center">Waiting for a job...</span>
+	    <% end %>
+	  </td>
+	</tr>
+      <% end %>
+   </tbody>
+ </table>

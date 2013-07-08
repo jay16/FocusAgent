@@ -1,0 +1,32 @@
+<div class="span10 offset1">
+  <h4>Mail Mqueue Wait Status</h4>
+
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+	<th>wait</th>
+	<th colspan="16" style="text-align:center;">port</th>
+      </tr>
+
+      <tr>
+	<th>eth</th>
+       <% (0..15).each do |port| %>
+	<th><%= port %></th>
+       <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% wait_status = getMqueueWaitStatus %>
+      <% %w(163 126 sina qq).each do |eth|%>
+       <tr>
+	<td><%= eth %></td>
+	<% (0..15).each do |port| %>
+	     <td><%= wait_status.fetch(eth)[port] %></td>
+	<% end %>
+       </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>

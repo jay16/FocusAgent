@@ -1,0 +1,17 @@
+Luxer:
+  every: 300m
+  class: Luxer
+  args: 
+  description:
+QQ_Mover:
+  every: 5m
+  class: MV_QQ
+  args: 
+Sohu_Mover:
+  every: 5m
+  class: MV_Sohu
+  args: 
+Other_Mover:
+  every: 5m
+  class: MV_Other
+  args: 

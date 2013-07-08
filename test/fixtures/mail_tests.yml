@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  campaign_id: 1
+  domain: MyString
+  eml_file: MyString
+  email: MyString
+  mqpath: MyString
+  log_cm: MyText
+
+two:
+  campaign_id: 1
+  domain: MyString
+  eml_file: MyString
+  email: MyString
+  mqpath: MyString
+  log_cm: MyText

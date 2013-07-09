@@ -24,7 +24,7 @@ module FocusAgent
       #domains 邮箱域名 eths使用对应eth limit时速
       domains = %w(qq 163 sina yahoo sohu gmail tom hotmail other)
       eths    = %w(qq 163 sina 163 126 126 126 126 126)
-      limits  = %w(120 120 20 30 10 20 10 30 50)
+      limits  = %w(120 120 20 30 100 20 10 30 50)
       stop_time = 30*60
 
       unless domains.include?(domain) then
@@ -75,12 +75,12 @@ module FocusAgent
       when "yahoo"
         keywords = %w(allowed accepted ip)
       when "sohu"
-        keywords = %w(unavailable client blocked)
+        keywords = %w(client blocked)
       end 
 
       dindex = domains.index(domain)
       eth    = eths[dindex]
-      limit  = limits[dindex]
+      limit  = limits[dindex].to_i
       mv_logger.info "ETH is:#{eth} limit is:#{limit}/h keywords:#{keywords.to_s}"
       ports.each_with_index do |p, i|
 	puts "#{i} - #{p.to_s}"
@@ -103,7 +103,7 @@ module FocusAgent
 	    puts "next"*10
 	    next
 	  end
-	  mail = mails[0]
+	  mail = mails[Integer(rand(mails.size))]
 	  mail_path = File.join(org_path,mail)
 	  
 	  unless keywords.nil? then

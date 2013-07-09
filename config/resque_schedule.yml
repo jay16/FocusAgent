@@ -4,14 +4,38 @@ Luxer:
   args: 
   description:
 QQ_Mover:
-  every: 5m
+  cron: "0 8 * * *"
   class: MV_QQ
-  args: 
+  args:  
 Sohu_Mover:
-  every: 5m
+  cron: "0 8 * * *"
   class: MV_Sohu
   args: 
 Other_Mover:
-  every: 5m
-  class: MV_Other
-  args: 
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "other" 
+Yahoo_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "yahoo" 
+Tom_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "tom" 
+Gmail_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "gmail" 
+Hotmail_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "hotmail" 
+163_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "163" 
+Sina_Mover:
+  cron: "0 8 * * *"
+  class: MV_Worker
+  args: "sina" 

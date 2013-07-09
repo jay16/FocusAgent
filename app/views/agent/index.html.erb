@@ -16,10 +16,11 @@
 	  <table class='table table-bordered table-striped'>
 	    <thead>
 	      <tr>                                                                          
-		<th>&nbsp;</th>
+		<th>State</th>
 		<th>Where</th>                                                                    
 		<th>Queue</th>                                                                            
 		<th>Processing</th>
+		<th>Action</th>
 	      </tr>                                                                                               
 	    </thead>
 
@@ -45,6 +46,9 @@
 		      <% else %>
 			<span class='waiting' style="text-align:center">Waiting for a job...</span>
 		      <% end %>
+		    </td>
+		    <td>
+		       <a class="btn btn-mini" href="/worker/stop?pid=<%= pid %>" data-remote="true">Stop</a>
 		    </td>
 		  </tr>
 		<% end %>

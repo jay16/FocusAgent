@@ -1,0 +1,15 @@
+.col-sm-6.col-offset-3.error-page
+  %h1.error-title
+    %span.text-3d-left 4
+    %span.text-3d-center 0
+    %span.text-3d-right 4
+    %span.error-type Not Found
+  %p
+    We're afraid that you might have just arrived the wrong place
+    = succeed "." do
+      %span.error-url= request.url
+    Please check the address and try again, or the page you're looking for might have been moved.
+  %p
+    please back to home
+    %a{:href => "/", :title => "back to home!"} solife
+    to refound it.

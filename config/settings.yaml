@@ -1,0 +1,26 @@
+---
+default:
+  title: FocusMail代理
+  favicon: ./images/favicon.gif
+  os: &1
+    issue: ''
+    hostname: |
+      lijunjiedeMacBook-Air.local
+  sendmail: &2
+    speed: 300
+production:
+  title: FocusMail代理
+  favicon: ./images/favicon.gif
+  os: *1
+  sendmail: *2
+development:
+  title: FocusMail代理
+  favicon: ./images/favicon.gif
+  os: *1
+  sendmail: *2
+test:
+  title: FocusMail代理
+  favicon: ./images/favicon.gif
+  os: *1
+  sendmail: *2
+  default_password: ''

@@ -1,0 +1,4 @@
+port: 3456
+pid: tmp/pids/thin.pid
+environment: development 
+log: log/thin.log

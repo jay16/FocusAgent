@@ -1,11 +1,16 @@
-default: &default
-  example: "www.example.com"
-  alipay:
-    pid: '2088212078009126' # replace with your own
-    secret: 'gkvl7jzbnul33zxsr8zt0jem48o35tka'
-    seller_email: "wan@xiaojiti.com" # your alipay acount that you used to reigister the app
-    return_url: "http://demo.wohecha.cn/transactions/done"
-    notify_url: "http://demo.wohecha.cn/transactions/notify"
+---
+default:
+  website:
+    title: FocusMail代理
+    favicon: ./images/favicon.gif
+  os:
+    platform: "platform"
+    hostname: "hostname"
+  mailgates: 
+    speed: 300
+    wait_path: /mailgates/mqueue/wait
+    log_file: /mailgates/mqueue/log/mgmailerd.log
+    archive_log_path: /mailgates/mqueue/archived
 
 production:
   <<: *default

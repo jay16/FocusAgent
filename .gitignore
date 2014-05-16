@@ -5,8 +5,9 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
-.sass*
-.coffee*
+*.eml
+*.sass-cache
+*.coffee-cache
 /.bundle
 
 # Ignore the default SQLite database.

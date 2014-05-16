@@ -2,9 +2,9 @@
 !!!
 %html
   %head
-    %title= Settings.title
+    %title= Settings.website.title
     %meta{"http-equiv" => "content-type", content: "text/html", charset: "UTF-8"}
-    %link{href: "#{Settings.favicon}", rel: "shortcut icon"}
+    %link{href: "#{Settings.website.favicon}", rel: "shortcut icon"}
     = javascript_include_tag "/javascripts/jquery.js"
     = javascript_include_tag "/javascripts/bootstrap.min.3.0.3.js"
     = stylesheet_link_tag "/stylesheets/bootstrap.min.3.0.3.css"
@@ -13,7 +13,7 @@
     %header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav{:role => "banner", :style => "text-shadow: 0 -1px 0 rgba(0,0,0,.15);background-color: #563d7c;border-color: #463265;box-shadow: 0 1px 0 rgba(255,255,255,.1); color: white;"}
       .container
         .navbar-header
-          %a.navbar-brand{:href => "javascript:void(0);", style: "color:white;"}= Settings.os.hostname + " / " + Settings.os.issue
+          %a.navbar-brand{:href => "javascript:void(0);", style: "color:white;"}= ENV["OS_PLATFORM"] + " / " + ENV["OS_HOSTNAME"] 
         %nav.collapse.navbar-collapse.bs-navbar-collapse{:role => "navigation"}
           %ul.nav.navbar-nav.navbar-right
             %li

@@ -1,26 +1,22 @@
----
-default:
-  title: FocusMail代理
-  favicon: ./images/favicon.gif
-  os: &1
-    issue: ''
-    hostname: |
-      lijunjiedeMacBook-Air.local
-  sendmail: &2
+default: &default
+  website:
+    title: FocusMail代理
+    favicon: ./images/favicon.gif
+  thread:
+    wget: agent_wget.rb
+    mv2wait: agent_mv2wait.rb
+  mailgates: 
     speed: 300
+    wait_path: /Users/lijunjie/Code/work/focus_mail_agent/public/wait
+    log_file: /mailgates/mqueue/log/mgmailerd.log
+    archive_log_path: /mailgates/mqueue/archived
+
 production:
-  title: FocusMail代理
-  favicon: ./images/favicon.gif
-  os: *1
-  sendmail: *2
+  <<: *default
+
 development:
-  title: FocusMail代理
-  favicon: ./images/favicon.gif
-  os: *1
-  sendmail: *2
+  <<: *default
+
 test:
-  title: FocusMail代理
-  favicon: ./images/favicon.gif
-  os: *1
-  sendmail: *2
+  <<: *default
   default_password: ''

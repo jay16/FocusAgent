@@ -24,7 +24,6 @@ $:.unshift(File.join(ENV["APP_ROOT_PATH"],"lib/tasks"))
   $:.unshift(File.join(ENV["APP_ROOT_PATH"],"app",path))
 end
 
-
 # config文夹下为配置信息优先加载
 # modle信息已在asset-hanler中加载
 # asset-hanel嵌入在application_controller
@@ -38,14 +37,9 @@ controllers.each { |part| require "#{part}_helper" }
 # application_controller.rb最先被引用
 controllers.each { |part| require "#{part}_controller" }
 
+ENV["OS_PLATFORM"] = `uname -s`.to_s.strip
+ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 
-#预编译coffeescript
-#system("cd #{ENV['APP_ROOT_PATH']} && bundle exec rake coffee2js:complie")
-# 自定义匹配router前缀
-# route越复杂越前置，越模糊越后置
-#@app = Rack::Builder.new do
-#  map("/") { run TransactionsController }
-#end
-#run Sinatra::Application
-
-#Rack::Handler::Thin.run @app, :Port => 3000
+script_path = File.join(ENV["APP_ROOT_PATH"],"lib/script")
+system "nohup ruby #{File.join(script_path,'agent_wget.rb')} &"
+system "nohup ruby #{File.join(script_path,'agent_mv2wait.rb')} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"

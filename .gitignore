@@ -5,12 +5,14 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
+*.wget
+*.tar.gz
 *.eml
 *.sass-cache
 *.coffee-cache
 /.bundle
-/public/wget*
-/public/wait
+/public/wget*/
+/public/wait/
 
 # Ignore the default SQLite database.
 /db/*.sqlite3

@@ -1,6 +1,11 @@
 #encoding: utf-8
 require "fileutils"
 
+# api => wget_pool/wget_info.wget
+# read wget_pool/wget_info.wget => linux shell [wget] => wget_file/wget_file.tar.gz
+# tar -xzvf wget_file.tar.gz => wget_file/wget_file.eml; wget_file.tar.gz => wget_bak/
+# last remove wget_pool/wget_info.wget
+#
 # the file pool wait for wgets
 # filename like xxx.wget
 WGET_POOL = File.expand_path("../../../public/wget_pool", __FILE__)
@@ -32,10 +37,10 @@ trap("INT") { `rm #{pid_file}`; exit }
 
 while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
   files.empty? ? sleep(1) : files.each do |file|
-    lines = IO.readlines(File.join(WGET_POOL, file)) 
+    file_path = File.join(WGET_POOL, file)
+    lines = IO.readlines(file_path)
     timestamp, type, filename, md5, *other = lines[0].split(",")
     download_url = "http://#{SERVER}/openapi/#{filename}"
-    puts "email download url: #{download_url}"
 
     # download email from server with linux shell command#wget
     status, *result = run_command( "cd #{WGET_FILE} && wget #{download_url}" )
@@ -48,10 +53,11 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
     status, *ret = run_command( "cd #{WGET_FILE} && md5 -r #{filename}" )
     if status and  md5 == ret[0].split(" ")[0].chomp
       log = [Time.now.strftime('%Y-%m-%d %H:%M:%S'), type, filename, md5, download_url].join(", ")
-      `echo #{log} >> #{File.join(LOG_FILE,'wget.log')}`
+      `echo #{log} >> #{File.join(LOG_PATH,'agent_wget.log')}`
       # extract email file from archived file when md5 correct
       # mv tar fiel to ../bak after extract
       run_command( "cd #{WGET_FILE} && tar -xzvf #{filename} && mv #{filename} #{WGET_BAK}" )
+      run_command( "cd #{WGET_POOL} && mv #{file} #{WGET_BAK}" )
     else
       File.delete(tar_path) if File.exist?(tar_path)
     end

@@ -17,11 +17,12 @@ module ApplicationHelper
   def ps_result(title, pid)
     ps = "ps aux | grep #{pid} | grep -v 'grep'"
     status, *result = run_command(ps)
+    keywords = ["ruby", ENV["APP_ROOT_PATH"],"passenger", "thin"]
+    result = result.find_all{ |i| keywords.any?(&i.method(:include?)) }
     if result.empty?
       ["result is empty - ", ps].join
     else
-      keywords = ["ruby", ENV["APP_ROOT_PATH"],"passenger", "thin"]
-      row = result.find_all{ |i| keywords.any?(&i.method(:include?)) }.first.split
+      row = result.first.split
       row.first(title.length-1).push(row.last(row.length-title.length+1).join(" "))
     end
   end

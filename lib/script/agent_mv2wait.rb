@@ -30,7 +30,7 @@ pid = Process.pid
 # rm pid file when stop process
 trap("INT") { `rm #{pid_file}`; exit }
 
-while (emails=Dir.entries(WGET_FILE).grep(/.eml/)).respond_to?(:each)
+while (emails=Dir.entries(WGET_FILE).grep(/.eml$/)).respond_to?(:each)
   emails.empty? ? sleep(1) : emails.each do |email|
     email_path = File.join(WGET_FILE, email)
     `mv #{email_path} #{wait_path}`

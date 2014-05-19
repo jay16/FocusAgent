@@ -11,8 +11,6 @@
 *.sass-cache
 *.coffee-cache
 /.bundle
-/public/wget*/
-/public/wait/
 
 # Ignore the default SQLite database.
 /db/*.sqlite3

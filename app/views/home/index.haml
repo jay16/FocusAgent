@@ -1,1 +1,15 @@
-hello world
+- process_info = agent_process_info
+%table.table.table-hover.table-bordered
+  %thead
+    %tr
+      - process_info.shift.each do |item|
+        %th= item
+  %tbody
+    - process_info.each do |row|
+      %tr
+        - if row.is_a?(Array)
+          - row.each do |item|
+            %td= item
+        - else
+          %td{"colspan" => "11"}
+            =row

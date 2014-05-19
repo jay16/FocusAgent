@@ -40,6 +40,43 @@ controllers.each { |part| require "#{part}_controller" }
 ENV["OS_PLATFORM"] = `uname -s`.to_s.strip
 ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 
+# execute linux shell command
+# return array with command result
+# [execute status, execute result] 
+def run_command(cmd)
+  IO.popen(cmd) do |stdout|
+    stdout.reject(&:empty?)
+  end.unshift($?.exitstatus.zero?)
+end 
+
+def kill_agent_process_if_exist(script_file, pid_file)
+  if File.exist?(pid_file) and !(lines = IO.readlines(pid_file)).empty?
+      pid = lines[0].strip
+      ps = "ps aux | grep #{pid} | grep -v 'grep'"
+      puts "execute shell - #{ps}"
+      status, *result = run_command(ps)
+      if status and result.join.include?(script_file)
+        `kill -9 #{pid}`
+        status, *result = run_command(ps)
+        puts (result.empty? ? "kill -p #{pid} successfully!" : "fail kill -9 #{pid} - #{result.join}")
+      else
+        warn "pid #{pid} not found - #{result.join}"
+      end
+  else
+    warn "pid_file not found - #{pid_file}"
+  end
+end
+
+tmp_path = File.join(ENV["APP_ROOT_PATH"],"tmp")
 script_path = File.join(ENV["APP_ROOT_PATH"],"lib/script")
-system "nohup ruby #{File.join(script_path,'agent_wget.rb')} &"
-system "nohup ruby #{File.join(script_path,'agent_mv2wait.rb')} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
+%w(agent_wget agent_mv2wait).each do |p|
+  script_file = File.join(script_path, [p, "rb"].join("."))
+  pid_file    = File.join(tmp_path, [p, "pid"].join("."))
+
+  # kill exist old agent process 
+  # before startup new agent process
+  kill_agent_process_if_exist(script_file, pid_file)
+
+  system "nohup ruby #{script_file} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
+end
+

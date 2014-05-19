@@ -8,7 +8,7 @@ class OpenController < ApplicationController
     haml :index, layout: :"../layouts/layout"
   end
 
-  #接收server呼叫api发信
+  # 接收server呼叫api发信
   # params:
   # format: 文件格式
   # email:  email

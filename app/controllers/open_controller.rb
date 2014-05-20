@@ -1,5 +1,4 @@
 #encoding: utf-8
-require "json"
 class OpenController < ApplicationController
   set :views, ENV["VIEW_PATH"] + "/home"
 

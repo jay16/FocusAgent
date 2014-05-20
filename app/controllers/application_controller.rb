@@ -1,4 +1,5 @@
 #encoding: utf-8
+require "json"
 class ApplicationController < Sinatra::Base
   register Sinatra::Reloader
   register Sinatra::Flash

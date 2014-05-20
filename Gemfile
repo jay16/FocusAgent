@@ -24,7 +24,7 @@ gem "therubyracer"
 gem "coffee-script"
 
 gem "passenger"
-#gem "thin"
+gem "thin"
 gem "rake"
 gem "settingslogic"
 

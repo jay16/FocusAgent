@@ -1,5 +1,6 @@
 require "./config/boot.rb"
 
+map("/admin") { run AdminController }
 map("/") { run OpenController }
 
 

@@ -30,10 +30,10 @@ gem "settingslogic"
 
 #代码覆盖率
 #rake stats
-gem "code_statistics"
+#gem "code_statistics"
 
 group :test do
-  gem "rack-test"
-  gem "rspec"
-  gem "factory_girl"
+  #gem "rack-test"
+  #gem "rspec"
+  #gem "factory_girl"
 end

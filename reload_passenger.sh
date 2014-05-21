@@ -10,7 +10,8 @@ else
   user="webmail"
 fi
 
+port=3333
 cd $(pwd)
-passenger stop -p 3456
-passenger start -p 3456 --user $user -d
+passenger stop -p $port
+passenger start -p $port --user $user -d
 

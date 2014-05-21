@@ -7,9 +7,9 @@ default: &default
     mv2wait: agent_mv2wait.rb
   mailgates: 
     speed: 300
-    wait_path: /Users/lijunjie/Code/work/focus_mail_agent/public/wait
+    wait_path: /mailgates/mqueue/wait/
     log_file: /mailgates/mqueue/log/mgmailerd.log
-    archive_log_path: /mailgates/mqueue/archived
+    archive_log_path: /mailgates/qlogs_archive/
 
 production:
   <<: *default

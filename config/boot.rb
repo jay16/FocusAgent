@@ -1,4 +1,5 @@
 require "rubygems"
+require "fileutils"
 
 ENV["APP_NAME"] ||= "focus_mail_agent"
 ENV["RACK_ENV"] ||= "development"
@@ -30,7 +31,7 @@ end
 require "asset-handler"
 require "form-helpers"
 
-controllers = %w(application open) 
+controllers = %w(application open admin)
 # helper在controller中被调用，优先于controller
 controllers.each { |part| require "#{part}_helper" }
 # controller,基类application_controller.rb
@@ -39,6 +40,17 @@ controllers.each { |part| require "#{part}_controller" }
 
 ENV["OS_PLATFORM"] = `uname -s`.to_s.strip
 ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
+
+# basic dirctory config
+public_path = File.join(ENV["APP_ROOT_PATH"],"public")
+FileUtils.mdkir(public_path) unless File.exist?(public_path)
+wget_pool_path = File.join(public_path, "wget_pool")
+FileUtils.mdkir(wget_pool_path) unless File.exist?(wget_pool_path)
+wget_file_path = File.join(public_path, "wget_file")
+FileUtils.mdkir(wget_file_path) unless File.exist?(wget_file_path)
+wget_bak_path  = File.join(public_path, "wget_bak")
+FileUtils.mdkir(wget_bak_path) unless File.exist?(wget_bak_path)
+
 
 # execute linux shell command
 # return array with command result

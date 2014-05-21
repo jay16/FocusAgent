@@ -50,7 +50,7 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
     tar_path = File.join(WGET_FILE,filename)
 
     # chk md5 value with the download archive file 
-    status, *ret = run_command( "cd #{WGET_FILE} && md5 -r #{filename}" )
+    status, *ret = run_command( "cd #{WGET_FILE} && md5sum #{filename}" )
     if status and  md5 == ret[0].split(" ")[0].chomp
       log = [Time.now.strftime('%Y-%m-%d %H:%M:%S'), type, filename, md5, download_url].join(", ")
       `echo #{log} >> #{File.join(LOG_PATH,'agent_wget.log')}`

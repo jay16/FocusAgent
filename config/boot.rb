@@ -89,6 +89,6 @@ script_path = File.join(ENV["APP_ROOT_PATH"],"lib/script")
   # before startup new agent process
   kill_agent_process_if_exist(script_file, pid_file)
 
-  system "nohup ruby #{script_file} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
+  #system "nohup ruby #{script_file} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
 end
 

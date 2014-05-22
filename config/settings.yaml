@@ -9,7 +9,7 @@ default: &default
     speed: 300
     wait_path: /mailgates/mqueue/wait/
     log_file: /mailgates/mqueue/log/mgmailerd.log
-    archive_log_path: /mailgates/qlogs_archive/
+    log_archive_path: /mailgates/log_archive/
 
 production:
   <<: *default

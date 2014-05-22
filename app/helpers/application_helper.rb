@@ -1,3 +1,4 @@
+require "cgi"
 module ApplicationHelper
 
   def notice_message
@@ -40,5 +41,9 @@ module ApplicationHelper
         ["pid_file not found - ", pid_path].join
       end
     end.unshift(main_process).unshift(title)
+  end
+
+  def raw(html)
+    CGI.escapeHTML(html)
   end
 end

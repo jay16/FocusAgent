@@ -3,8 +3,8 @@ require "nokogiri"
 require "net/http"
 require "uri"
 
-url  = "http://127.0.0.1"
-port = 3456
+url  = "http://mg01.mailhok.com"
+port = 3333
 base_url = [url, port].join(":")
 
 def base_test_post base_url, path, params
@@ -33,5 +33,5 @@ end
 params = eval(%Q({"email"=>"327264757@qq.com", "tar_name"=>"327264757-qq.com_20140510225710.eml.tar.gz", "strftime"=>"2014-05-10 22:57:10", "md5"=>"347e5dad0bd0f12c168b885a3ddcf250", "open"=>{"format"=>"json", "email"=>"327264757@qq.com", "tar_name"=>"327264757-qq.com_20140510225710.eml.tar.gz", "strftime"=>"2014-05-10 22:57:10", "md5"=>"347e5dad0bd0f12c168b885a3ddcf250", "controller"=>"open", "action"=>"mailer"}}))
 base_test_post(base_url, "open/mailer", params)
 params = eval(%Q({"format"=>"json", "email"=>"327264757@qq.com", "filename"=>"327264757-qq.com_20140510225710.eml.tar.gz", "strftime"=>"2014-05-10 22:57:10", "md5"=>"347e5dad0bd0f12c168b885a3ddcf250", "controller"=>"open", "action"=>"mailer"}))
-base_test_get(base_url, "campaigns/listener", params)
+#base_test_get(base_url, "campaigns/listener", params)
 #puts params

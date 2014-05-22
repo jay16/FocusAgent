@@ -40,9 +40,12 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
     file_path = File.join(WGET_POOL, file)
     lines = IO.readlines(file_path)
     timestamp, type, filename, md5, *other = lines[0].split(",")
+    type = type.to_s.downcase.strip
+    puts type
 
     # different url with different api type
-    url_path = (type.to_s.downcase.strip == "api" ?  "openapi" : "mailtem/mailtest")
+    url_path = (type == "api" ?  "openapi" : "mailtem/mailtest")
+    filename = [filename, "tar.gz"].join(".") if type == "test"
     download_url = "http://#{SERVER}/#{url_path}/#{filename}"
 
     # download email from server with linux shell command#wget
@@ -64,19 +67,24 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
       run_command( "cd #{WGET_POOL} && mv #{file} #{WGET_BAK}" )
 
       # 322_MailTest_20140414231032/qq/561274_1397488232.187485.eml
-      if type.to_s.downcase.strip == "test"
+      if type == "test"
         test_dir_name = File.basename(filename, ".tar.gz")
         test_dir_path = File.join(WGET_FILE, test_dir_name)
-        Dir.entries(test_dir_path) do |domain|
+
+        Dir.entries(test_dir_path).each do |domain|
           next if domain == "." or domain == ".."
+
           test_domain_path = File.join(test_dir_path, domain)
-          Dir.entries(test_domain_path).grep(/.eml$/) do |email|
+          Dir.entries(test_domain_path).grep(/.eml$/).each do |email|
             test_email_path = File.join(test_domain_path, email)
+
             new_email_name = [test_dir_name, domain, email].join("_")
             new_email_path = File.join(WGET_FILE, new_email_name)
-            `mv #{test_email_path} #{new_email_path} && rm -fr #{test_dir_path}`
+
+            `mv #{test_email_path} #{new_email_path}`
           end
         end
+        `rm -fr #{test_dir_path}`
       end
 
     else

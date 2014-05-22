@@ -11,12 +11,12 @@ class AdminController < ApplicationController
   # get /admin/passenger?todo=
   get "/passenger" do
     case params[:todo] || "null"
-    when "reload"
+    when "restart "
         `cd #{ENV["APP_ROOT_PATH"]} && sh passenger.sh restart`
     when "stop"
-        `cd #{ENV["APP_ROOT_PATH"]} && sh stop_passenger.sh stop`
+        `cd #{ENV["APP_ROOT_PATH"]} && sh passenger.sh stop`
     else
-      "[stop, reload]"
+      "[stop, restart]"
     end
   end
 

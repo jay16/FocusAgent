@@ -40,7 +40,10 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
     file_path = File.join(WGET_POOL, file)
     lines = IO.readlines(file_path)
     timestamp, type, filename, md5, *other = lines[0].split(",")
-    download_url = "http://#{SERVER}/openapi/#{filename}"
+
+    # different url with different api type
+    url_path = (type.to_s.downcase.strip == "api" ?  "openapi" : "mailtem/mailtest")
+    download_url = "http://#{SERVER}/#{url_path}/#{filename}"
 
     # download email from server with linux shell command#wget
     status, *result = run_command( "cd #{WGET_FILE} && wget #{download_url}" )
@@ -54,10 +57,28 @@ while (files = Dir.entries(WGET_POOL).grep(/.wget/)).respond_to?(:each)
     if status and  md5 == ret[0].split(" ")[0].chomp
       log = [Time.now.strftime('%Y-%m-%d %H:%M:%S'), type, filename, md5, download_url].join(", ")
       `echo #{log} >> #{File.join(LOG_PATH,'agent_wget.log')}`
+
       # extract email file from archived file when md5 correct
-      # mv tar fiel to ../bak after extract
+      # mv tar.gz and .wget file to ../bak after extract
       run_command( "cd #{WGET_FILE} && tar -xzvf #{filename} && mv #{filename} #{WGET_BAK}" )
       run_command( "cd #{WGET_POOL} && mv #{file} #{WGET_BAK}" )
+
+      # 322_MailTest_20140414231032/qq/561274_1397488232.187485.eml
+      if type.to_s.downcase.strip == "test"
+        test_dir_name = File.basename(filename, ".tar.gz")
+        test_dir_path = File.join(WGET_FILE, test_dir_name)
+        Dir.entries(test_dir_path) do |domain|
+          next if domain == "." or domain == ".."
+          test_domain_path = File.join(test_dir_path, domain)
+          Dir.entries(test_domain_path).grep(/.eml$/) do |email|
+            test_email_path = File.join(test_domain_path, email)
+            new_email_name = [test_dir_name, domain, email].join("_")
+            new_email_path = File.join(WGET_FILE, new_email_name)
+            `mv #{test_email_path} #{new_email_path} && rm -fr #{test_dir_path}`
+          end
+        end
+      end
+
     else
       File.delete(tar_path) if File.exist?(tar_path)
     end

@@ -6,6 +6,9 @@ default: &default
     wget: agent_wget.rb
     mv2wait: agent_mv2wait.rb
   mailgates: 
+    user: webmail
+    group: webmail
+    mode: 777
     speed: 300
     wait_path: /mailgates/mqueue/wait/
     log_file: /mailgates/mqueue/log/mgmailerd.log

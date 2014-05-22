@@ -27,11 +27,11 @@ class OpenController < ApplicationController
   # md5     : email压缩文件md5值
   # sdate   : server date
   # mail_type : 测试类型, 0 为内测， 1为搬信
-  get "/campaigns/listener" do
+  get "/campaigns/listener.json" do
     campaigns_listener_action
   end
 
-  post "/campaigns/listener" do
+  post "/campaigns/listener.json" do
     campaigns_listener_action
   end
 
@@ -59,7 +59,7 @@ class OpenController < ApplicationController
 
 
   def campaigns_listener_action
-    filename  =  params[:filename]   #campaign_id活动id
+    filename  =  params[:filename]   
     md5       =  params[:md5] 
     mail_type =  params[:mail_type] || "none"
 

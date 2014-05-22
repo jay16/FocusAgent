@@ -31,7 +31,13 @@ end
 require "asset-handler"
 require "form-helpers"
 
-controllers = %w(application open admin)
+# application must be first
+# other controller base on it
+controllers = Dir.entries(File.join(ENV["APP_ROOT_PATH"],"app/controllers"))
+  .grep(/_controller\.rb$/).map { |f| f.sub("_controller.rb","") }
+tmp_index = controllers.index("application")
+controllers[tmp_index] = controllers[0] 
+controllers[0] = "application"
 # helper在controller中被调用，优先于controller
 controllers.each { |part| require "#{part}_helper" }
 # controller,基类application_controller.rb
@@ -50,6 +56,9 @@ wget_file_path = File.join(public_path, "wget_file")
 FileUtils.mdkir(wget_file_path) unless File.exist?(wget_file_path)
 wget_bak_path  = File.join(public_path, "wget_bak")
 FileUtils.mdkir(wget_bak_path) unless File.exist?(wget_bak_path)
+
+`chown -R #{Settings.mailgates.user}:#{Settings.mailgates.group} #{ENV["APP_ROOT_PATH"]}`
+`chmod -R #{Settings.mailgates.mode} #{ENV["APP_ROOT_PATH"]}`
 
 
 # execute linux shell command

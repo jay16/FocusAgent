@@ -17,6 +17,10 @@ Bundler.require(:default, ENV["RACK_ENV"])
 ENV["APP_ROOT_PATH"] = File.expand_path("../../", __FILE__)
 ENV["VIEW_PATH"] = File.join(ENV["APP_ROOT_PATH"], "app/views")
 
+# basic dirctory config
+`cd #{ENV["APP_ROOT_PATH"]} && mkdir -p public/{wget_pool,wget_file,wget_bak}`
+`cd #{ENV["APP_ROOT_PATH"]} && test -d log || mkdir log`
+
 # 扩充require路径数组
 # require 文件时会在$:数组中查找是否存在
 $:.unshift(File.join(ENV["APP_ROOT_PATH"],"config"))
@@ -44,18 +48,9 @@ controllers.each { |part| require "#{part}_helper" }
 # application_controller.rb最先被引用
 controllers.each { |part| require "#{part}_controller" }
 
-ENV["OS_PLATFORM"] = `uname -s`.to_s.strip
+ENV["OS_PLATFORM"] = `test -f /etc/issue && cat /etc/issue | head -n 1 || uname -s`.to_s.strip
 ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 
-# basic dirctory config
-public_path = File.join(ENV["APP_ROOT_PATH"],"public")
-FileUtils.mdkir(public_path) unless File.exist?(public_path)
-wget_pool_path = File.join(public_path, "wget_pool")
-FileUtils.mdkir(wget_pool_path) unless File.exist?(wget_pool_path)
-wget_file_path = File.join(public_path, "wget_file")
-FileUtils.mdkir(wget_file_path) unless File.exist?(wget_file_path)
-wget_bak_path  = File.join(public_path, "wget_bak")
-FileUtils.mdkir(wget_bak_path) unless File.exist?(wget_bak_path)
 
 `chown -R #{Settings.mailgates.user}:#{Settings.mailgates.group} #{ENV["APP_ROOT_PATH"]}`
 `chmod -R #{Settings.mailgates.mode} #{ENV["APP_ROOT_PATH"]}`
@@ -99,7 +94,14 @@ script_path = File.join(ENV["APP_ROOT_PATH"],"lib/script")
   kill_agent_process_if_exist(script_file, pid_file)
 
   if p == "agent_wget"
-      system "nohup ruby #{script_file} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
+  #    system "nohup ruby #{script_file} #{Settings.mailgates.speed} #{Settings.mailgates.wait_path} &"
   end
 end
 
+# run this then startup successfully
+# record start log in log/startup.log
+tmp_title = "timestamp, action, plantform, hostname"
+tmp_str   = [Time.now.strftime("%Y-%m-%d %H:%M:%S"), "start", ENV["OS_PLATFORM"], ENV["OS_HOSTNAME"]].join(", ")
+log_path = "log/startup.log"
+`cd #{ENV["APP_ROOT_PATH"]} && test -f #{log_path} || echo "#{tmp_title}" > #{log_path}`
+`cd #{ENV["APP_ROOT_PATH"]} && echo "#{tmp_str}" >> #{log_path}`

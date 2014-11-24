@@ -7,7 +7,7 @@ if defined? Encoding
 end
 
 #sinatra
-gem "sinatra"
+gem "sinatra", "~>1.4.5"
 gem "sinatra-reloader"
 gem "sinatra-flash"
 
@@ -18,22 +18,17 @@ gem "sinatra-flash"
 #gem "dm-sqlite-adapter"
 
 #assets
-gem "haml"
-gem "sass"
-gem "therubyracer"
-gem "coffee-script"
+gem "haml", "~> 4.0.5"
+gem "sass", "~>3.3.7"
+gem "therubyracer", "~>0.12.1"
+gem "coffee-script", "~>2.2.0"
 
-gem "passenger"
-gem "thin"
-gem "rake"
-gem "settingslogic"
+gem "thin", "~>1.6.2"
+gem "rake", "~>10.3.2"
+gem "settingslogic", "~>2.0.9"
+gem "time_diff", "~>0.3.0"
 
 #代码覆盖率
 #rake stats
 #gem "code_statistics"
 
-group :test do
-  #gem "rack-test"
-  #gem "rspec"
-  #gem "factory_girl"
-end

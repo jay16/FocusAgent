@@ -1,15 +1,28 @@
-.col-sm-6.col-offset-3.error-page
+.col-sm-12.error-page
   %h1.error-title
     %span.text-3d-left 4
     %span.text-3d-center 0
     %span.text-3d-right 4
-    %span.error-type Not Found
-  %p
-    We're afraid that you might have just arrived the wrong place
-    = succeed "." do
-      %span.error-url= request.url
-    Please check the address and try again, or the page you're looking for might have been moved.
-  %p
-    please back to home
-    %a{:href => "/", :title => "back to home!"} solife
-    to refound it.
+
+  .col-sm-6.col-sm-offset-3
+    .panel.panel-default
+      .panel-body
+        %h4{style: "text-align: center;"} 通缉令
+        %p{style: "width:100%; text-align: center;"}
+          %span.error-url= "%s %s" % [request.request_method, request.url]
+
+        %p 如果你通过浏览本站链接跳转到此处，恭喜你，你找到了本站通缉已久的页面。 
+
+        %p 不要惊慌，你有以下三种选择:
+        %ol
+          %li 
+            把本界面截图发邮件至管理员(jay_li@intfocus.com)，你会得到应有的奖赏和荣誉称号.
+            %span.glyphicon.glyphicon-thumbs-up
+          %li
+            作为路人，可点击
+            %a{:href => "/"} 此处
+            返回首页.
+          %li 如果你腿脚有些发颤，有种想上厕所的感觉，请关闭此界面.
+
+        %footer.right -- [MailHok]公安部
+

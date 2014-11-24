@@ -1,3 +1,28 @@
+%h1 系统环境
+
+%table.table.table-bordered.table-striped
+  %thead
+    %tr
+      %td{style: "width:15%;"} 参数
+      %td 信息
+  %tbody
+    %tr
+      %td platform
+      %td= ENV["OS_PLATFORM"]
+    %tr
+      %td hostname
+      %td= ENV["OS_HOSTNAME"]
+    %tr
+      %td sysdate
+      %td= Time.now.strftime("%Y/%m/%d %H:%M:%S")
+    - startup = Time.at(ENV["DATE_STARTUP"].to_i)
+    %tr
+      %td startup 
+      %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
+    %tr
+      %td runtime
+      %td= Time.diff(startup, Time.now)[:diff]
+
 - process_info = agent_process_info
 %table.table.table-hover.table-bordered
   %thead

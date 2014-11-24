@@ -1,7 +1,7 @@
 require "./config/boot.rb"
 
-map("/admin") { run AdminController }
-map("/") { run OpenController }
+map("/")       { run HomeController }
+map("/cpanel") { run Cpanel::HomeController }
 
 
 #run Sinatra::Application

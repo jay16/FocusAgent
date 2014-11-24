@@ -4,7 +4,7 @@ require "logger"
 class SassHandler < Sinatra::Base
     set :views, ENV["APP_ROOT_PATH"] +  "/app/assets/stylesheets"
     
-    get '/stylesheets/*.scss' do
+    get "/stylesheets/*.scss" do
         filename = params[:splat].first
         scss filename.to_sym
     end
@@ -16,6 +16,20 @@ class CoffeeHandler < Sinatra::Base
     get "/javascripts/*.coffee" do
         filename = params[:splat].first
         coffee filename.to_sym
+    end
+end
+
+class ImageHandler < Sinatra::Base
+    set :views, ENV["APP_ROOT_PATH"] +  "/app/assets/images"
+    
+    get "/images/*" do
+        filename = params[:splat].first
+        filepath = "%s/%s" % [settings.views, filename]
+        # use default image when not found
+        unless (File.exist?(filepath) and File.file?(filepath))
+            filepath = "%s/default.jpg" % settings.views
+        end
+        send_file(filepath,:type => "image/jpeg", :disposition => "inline") 
     end
 end
 
@@ -44,10 +58,4 @@ class AssetHandler < Sinatra::Base
     set :haml, :layout_engine => :haml, :layout => :"/app/views/layouts/layout"
     set :cssengine, "css"
   end
-
-   # 加载数据库及model
-   # db_path = File.join(ENV["APP_ROOT_PATH"], "db")
-   # FileUtils.mkdir_p(db_path) unless File.exist?(db_path)
-   require "database"
-
 end

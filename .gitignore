@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
+*.y[a]ml
 *.wget
 *.tar.gz
 *.eml

@@ -46,4 +46,7 @@ module ApplicationHelper
   def raw(html)
     CGI.escapeHTML(html)
   end
+  def str2time(datestr, format="%Y-%m-%d %H:%M:%S")
+    DateTime.strptime(datestr, format).to_time
+  end
 end

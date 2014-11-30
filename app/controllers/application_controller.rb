@@ -39,8 +39,25 @@ class ApplicationController < Sinatra::Base
     request.user_agent
   end
   def run_shell(cmd)
-    IO.popen(cmd) { |stdout| stdout.reject(&:empty?) }.unshift($?.exitstatus.zero?)
+    IO.popen(cmd) do |stdout| 
+      stdout.reject(&:empty?) 
+    end.unshift($?.exitstatus.zero?)
   end 
+
+  #[:erb, :haml, :slim].each do |method_name|
+  #  define_method "#{method_name}_with_layout" do |template, options|
+  #    unless options.include?(:layout)
+  #      begin
+  #      options[:layout] = settings.layout 
+  #      rescue  => e
+  #        puts e.message
+  #      end
+  #    end
+  #    send(method_name, template, options)
+  #  end
+
+  #  alias_method_chain method_name, :layout
+  #end
 
   # 404 page
   not_found do

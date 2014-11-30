@@ -1,4 +1,4 @@
-root_path = File.expand_path("../../", __FILE__)
+root_path = File.dirname(File.dirname(__FILE__))#File.expand_path("../../", __FILE__)
 ENV["APP_NAME"]  ||= "focus_mail_agent"
 ENV["RACK_ENV"]  ||= "development"
 ENV["ASSET_CDN"] ||= "false"

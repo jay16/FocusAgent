@@ -22,6 +22,9 @@
     %tr
       %td runtime
       %td= Time.diff(startup, Time.now)[:diff]
+    %tr
+      %td root
+      %td= ENV["APP_ROOT_PATH"]
 
 - process_info = agent_process_info
 %table.table.table-hover.table-bordered

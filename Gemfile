@@ -8,8 +8,9 @@ end
 
 #sinatra
 gem "sinatra", "~>1.4.5"
-gem "sinatra-reloader"
-gem "sinatra-flash"
+gem "sinatra-reloader", "1.0"
+gem "sinatra-flash", "~>0.3.0"
+gem "rest-client", "~>1.7.2"
 
 #db
 #gem "dm-core"
@@ -28,7 +29,7 @@ gem "rake", "~>10.3.2"
 gem "settingslogic", "~>2.0.9"
 gem "time_diff", "~>0.3.0"
 
-#代码覆盖率
-#rake stats
-#gem "code_statistics"
+group :development do
+  gem "rspec", "~>3.1.0"
+end
 

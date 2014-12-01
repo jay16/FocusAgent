@@ -8,9 +8,9 @@ end
 
 #sinatra
 gem "sinatra", "~>1.4.5"
-gem "sinatra-reloader", "1.0"
+gem "sinatra-contrib", "~>1.4.2"
 gem "sinatra-flash", "~>0.3.0"
-gem "rest-client", "~>1.7.2"
+#gem "rest-client", "~>1.7.2"
 
 #db
 #gem "dm-core"

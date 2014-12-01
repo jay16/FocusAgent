@@ -12,8 +12,10 @@ class HomeController < ApplicationController
     redirect "/cpanel"
   end
 
-  get "/public/openapi/:tar_file" do
-    file_name = params[:tar_file]
+  # test api as server
+  # download tar file from public/openapi/
+  get "/public/openapi/:file", "/openapi/:file" do
+    file_name = params[:file]
     file_path = "%s/public/openapi/%s" % [ENV["APP_ROOT_PATH"], file_name]
     send_file(file_path, :filename => file_name)
   end

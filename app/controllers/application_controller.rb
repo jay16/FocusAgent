@@ -1,20 +1,19 @@
 #encoding: utf-8
 require "json"
 class ApplicationController < Sinatra::Base
-  register Sinatra::Reloader
-  #register Sinatra::Flash
+  # css/js/view配置文档
+  use AssetHandler
+  use ImageHandler
+  use SassHandler
+  use CoffeeHandler
 
   helpers ApplicationHelper
   helpers HomeHelper
   helpers Sinatra::FormHelpers
   
-  enable :sessions, :logging, :dump_errors, :raise_errors, :static, :method_override
-
-  # css/js/view配置文档
-  use ImageHandler
-  use SassHandler
-  use CoffeeHandler
-  use AssetHandler
+  register Sinatra::Reloader if development?
+  register Sinatra::MultiRoute
+  register Sinatra::Flash
 
   #load css/js/font file
   #get "/js/:file" do

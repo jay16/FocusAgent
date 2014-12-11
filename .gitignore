@@ -35,3 +35,6 @@
 *.zip
 *~
 *out
+*.eml
+*.tar.gz
+*.gz

@@ -15,6 +15,10 @@ class ApplicationController < Sinatra::Base
   register Sinatra::MultiRoute
   register Sinatra::Flash
 
+  before do
+    print_format_logger
+  end
+
   #load css/js/font file
   #get "/js/:file" do
   #  disposition_file("javascripts")
@@ -37,26 +41,46 @@ class ApplicationController < Sinatra::Base
   def remote_browser
     request.user_agent
   end
-  def run_shell(cmd)
-    IO.popen(cmd) do |stdout| 
-      stdout.reject(&:empty?) 
+
+  # execute linux shell command
+  # return array with command result
+  # [execute status, execute result] 
+  def run_command(cmd)
+    IO.popen(cmd) do |stdout|
+      stdout.reject(&:empty?)
     end.unshift($?.exitstatus.zero?)
   end 
 
-  #[:erb, :haml, :slim].each do |method_name|
-  #  define_method "#{method_name}_with_layout" do |template, options|
-  #    unless options.include?(:layout)
-  #      begin
-  #      options[:layout] = settings.layout 
-  #      rescue  => e
-  #        puts e.message
-  #      end
-  #    end
-  #    send(method_name, template, options)
-  #  end
+  def print_format_logger
+    hash = params || {}
+    info = {:ip => remote_ip, :browser => remote_browser}
+    params = hash.merge(info)
+    log_info = %Q{
+#{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}
+Parameters:\n #{params.to_s}
+Request:\n #{request_body if request.body}
+    }
+    puts log_info
+    logger.info log_info
+  end
 
-  #  alias_method_chain method_name, :layout
-  #end
+  def request_body(body = request.body)
+    @request_body = case body
+    when StringIO then body.string
+    when Tempfile then body.read
+    # gem#passenger is ugly!
+    #     it will change the structure of REQUEST
+    #     detail at: https://github.com/phusion/passenger/blob/master/lib/phusion_passenger/utils/tee_input.rb
+    when (defined?(PhusionPassenger) and PhusionPassenger::Utils::TeeInput)
+      body.read
+    # gem#unicorn
+    #     it also change the strtucture of REQUEST
+    when Rack::Lint::InputWrapper
+      body.read
+    else
+      body.to_str
+    end
+  end
 
   # 404 page
   not_found do

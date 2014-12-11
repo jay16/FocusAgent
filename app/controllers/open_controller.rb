@@ -38,9 +38,12 @@ class OpenController < ApplicationController
     if email && tar_name && md5 && strftime
       log_str  = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "api", tar_name, md5, email, strftime, remote_ip, remote_browser].join(",")
       log_file = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      wget_file = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", Time.now.to_i, md5.strip].join("-") + ".wget"]
-      ` echo "#{log_str}" >> #{log_file}`
-      ` echo "#{log_str}" > #{wget_file}`
+      wget_file = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", Time.now.to_f.to_s].join("-") + ".wget"]
+
+      shell = %Q{echo "%s" >> %s} % [log_str, log_file]
+      puts run_command(shell)
+      shell = %Q{echo "%s" >> %s} % [log_str, wget_file]
+      puts run_command(shell)
 
       hash = { :code => 1, :info => "deliver..." }
     else
@@ -58,11 +61,14 @@ class OpenController < ApplicationController
     mail_type =  params[:mail_type] || "none"
 
     if filename && md5
-      log_str  = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
-      log_file = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      wget_file = File.join(ENV["APP_ROOT_PATH"], "public/wget_pool", ["test", Time.now.to_i, md5.strip].join("-") + ".wget")
-      ` echo "#{log_str}" >> #{log_file}`
-      ` echo "#{log_str}" > #{wget_file}`
+      log_str   = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
+      log_file  = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
+      wget_file = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", Time.now.to_f.to_s].join("-") + ".wget")
+
+      shell = %Q{echo "%s" >> %s} % [log_str, log_file]
+      puts run_command(shell)
+      shell = %Q{echo "%s" >> %s} % [log_str, wget_file]
+      puts run_command(shell)
 
       hash = { :code => 1, :info => "deliver..." }
     else

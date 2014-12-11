@@ -1,16 +1,25 @@
----
-default:
+default: &default
   website:
     title: FocusMail代理
     favicon: ./images/favicon.gif
-  os:
-    platform: "platform"
-    hostname: "hostname"
+  server:
+    ip: localhost:3000 
+    download_path: /openapi
+    agent_ip: localhost:3000
+  pool:
+    wait: /public/pool/wait
+    download: /public/pool/download
+    emails: /public/pool/emails
+    backup: /public/pool/backup
+    archived: /public/pool/archived
   mailgates: 
-    speed: 300
-    wait_path: /mailgates/mqueue/wait
-    log_file: /mailgates/mqueue/log/mgmailerd.log
-    archive_log_path: /mailgates/mqueue/archived
+    user: webmail
+    group: webmail
+    mode: 777
+    path:
+      wait: /mailgates/mqueue/wait
+      log: /mailgates/mqueue/log/mgmailerd.log
+      archived: /mailgates/log_archive
 
 production:
   <<: *default

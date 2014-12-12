@@ -4,14 +4,17 @@ default: &default
     favicon: ./images/favicon.gif
   server:
     ip: localhost:3000 
-    download_path: /openapi
     agent_ip: localhost:3000
+    path:
+      download: /openapi
+      mailtest: /mailtem/mailtest
   pool:
     wait: /public/pool/wait
     download: /public/pool/download
     emails: /public/pool/emails
     backup: /public/pool/backup
     archived: /public/pool/archived
+    mailtest: /public/pool/mailtest
   mailgates: 
     user: webmail
     group: webmail

@@ -1,5 +1,6 @@
 #encoding: utf-8
 require "json"
+require "sinatra/multi_route"
 class ApplicationController < Sinatra::Base
   # css/js/view配置文档
   use AssetHandler
@@ -81,6 +82,15 @@ Request:\n #{request_body if request.body}
       body.to_str
     end
   end
+
+  def respond_with_json _body, code = nil
+    raise "code is necessary!" unless _body.has_key?(:code)
+    content_type "application/json"
+    body   _body.to_json
+    status code || _body[:code]
+  end
+
+  #alias_method :respond_to_api, :respond_with_json
 
   # 404 page
   not_found do

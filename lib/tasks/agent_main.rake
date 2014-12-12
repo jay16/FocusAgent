@@ -35,15 +35,20 @@ namespace :agent do
     return true
   end
 
-  task :download => :simple do
+  task :main => :simple do
     app_root_path = ENV["APP_ROOT_PATH"]
     pool_wait_path      = File.join(app_root_path, Setting.pool.wait)
     pool_download_path  = File.join(app_root_path, Setting.pool.download)
     pool_emails_path    = File.join(app_root_path, Setting.pool.emails)
     mailgates_wait_path = File.join(app_root_path, Setting.mailgates.path.wait)
-    base_url = "http://%s%s" % [Setting.server.ip, Setting.server.download_path]
-    Dir.glob("%s/*.wget" % pool_wait_path) do |file|
-      timestamp, type, tarname, md5, email, strftime, ip = IO.read(file).strip.split(/,/) 
+    base_url = "http://%s%s" % [Setting.server.ip, Setting.server.path.download]
+    puts pool_wait_path
+    Dir.entries(pool_wait_path).each do |file|
+      puts file
+      next unless file =~ /^api-.*.wget$/
+
+      file_path = File.join(pool_wait_path, file)
+      timestamp, type, tarname, md5, email, strftime, ip = IO.read(file_path).strip.split(/,/) 
       download_url = "%s/%s" % [base_url, tarname]
       download_file_from_server(pool_download_path, pool_emails_path, download_url, tarname, md5)
     end

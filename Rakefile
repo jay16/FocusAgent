@@ -16,17 +16,14 @@ task :simple do
   require "settingslogic"
   ENV["APP_ROOT_PATH"] = root = Dir.pwd
   ENV["RACK_ENV"] = "development"
-  class Setting < Settingslogic
-      source "config/setting.yaml"
-      namespace  ENV["RACK_ENV"] 
-  end
+  load "%s/app/models/setting.rb" % root
+
   def execute!(shell)
+    puts shell
     IO.popen(shell) do |stdout| 
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
   end 
-  
-  puts Setting.pool.wait
 end
 
 Dir.glob('lib/tasks/*.rake').each { |file| load file }

@@ -1,7 +1,6 @@
 require "./config/boot.rb"
 
 map("/")       { run HomeController }
-map("/open")   { run OpenController }
 map("/cpanel") { run Cpanel::HomeController }
 
 

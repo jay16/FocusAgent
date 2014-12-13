@@ -4,7 +4,6 @@ default: &default
     favicon: ./images/favicon.gif
   server:
     ip: localhost:3000 
-    agent_ip: localhost:3000
     path:
       download: /openapi
       mailtest: /mailtem/mailtest
@@ -12,7 +11,7 @@ default: &default
     wait: /public/pool/wait
     download: /public/pool/download
     emails: /public/pool/emails
-    backup: /public/pool/backup
+    data: /public/pool/data
     archived: /public/pool/archived
     mailtest: /public/pool/mailtest
   mailgates: 
@@ -23,6 +22,11 @@ default: &default
       wait: /mailgates/mqueue/wait
       log: /mailgates/mqueue/log/mgmailerd.log
       archived: /mailgates/log_archive
+  command:
+    darwin:
+      md5: "md5 -r"
+    linux:
+      md5: "md5sum"
 
 production:
   <<: *default
@@ -31,5 +35,31 @@ development:
   <<: *default
 
 test:
-  <<: *default
-  default_password: ''
+  website:
+    title: FocusMail代理
+    favicon: ./images/favicon.gif
+  server:
+    ip: localhost:3000 
+    path:
+      download: /openapi
+      mailtest: /mailtem/mailtest
+  pool:
+    wait: /public/pool/wait
+    download: /public/pool/download
+    emails: /public/pool/emails
+    data: /public/pool/data
+    archived: /public/pool/archived
+    mailtest: /public/pool/mailtest
+  mailgates: 
+    user: webmail
+    group: webmail
+    mode: 777
+    path:
+      wait: /Users/lijunjie/Code/work/focus_mail_agent/public/mailgates/mqueue/wait
+      log: /Users/lijunjie/Code/work/focus_mail_agent/public/mailgates/mqueue/log
+      archived: /Users/lijunjie/Code/work/focus_mail_agent/public/mailgates/log_archive
+  command:
+    darwin:
+      md5: "md5 -r"
+    linux:
+      md5: "md5sum"

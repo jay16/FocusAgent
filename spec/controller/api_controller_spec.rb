@@ -60,7 +60,7 @@ describe "APIController" do
     }
   end
 
-  it "should receive state [deliver..] when send mail trigger" do
+  it "should receive [deliver..] when open#api" do
     post "/open/mailer", generate_email_file_and_params
 
     expect(last_response.status).to eq(200)
@@ -69,7 +69,7 @@ describe "APIController" do
     expect(res["info"]).to eq("deliver...")
   end
 
-  it "should receive state [deliver..] when send mail trigger" do
+  it "should receive [deliver..] when campaigns#listener" do
     post "/campaigns/listener.json", generate_mailtest_files_and_params
 
     expect(last_response.status).to eq(200)
@@ -78,5 +78,3 @@ describe "APIController" do
     expect(res["info"]).to eq("deliver...")
   end
 end
-
-

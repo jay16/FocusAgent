@@ -4,7 +4,7 @@
 
 $:.unshift(File.dirname(__FILE__))
 
-task :default => [:environment]
+task :default => [:simple]
 
 desc "set up environment for rake"
 task :environment => "Gemfile.lock" do
@@ -49,11 +49,12 @@ task :simple do
     :pool_emails_path    => base_on_root_path(Setting.pool.emails),
     :pool_archived_path  => base_on_root_path(Setting.pool.archived),
     :pool_data_path      => base_on_root_path(Setting.pool.data),
+    :pool_mailtest_path  => base_on_root_path(Setting.pool.mailtest),
     :server_path_download=> Setting.server.path.download,
     :server_path_mailtest=> Setting.server.path.mailtest,
-    :mg_wait_path        => base_on_root_path(Setting.mailgates.path.wait),
-    :mg_log_path         => base_on_root_path(Setting.mailgates.path.log),
-    :mg_archived_path    => base_on_root_path(Setting.mailgates.path.archived)
+    :mg_wait_path        => Setting.mailgates.path.wait,
+    :mg_log_path         => Setting.mailgates.path.log,
+    :mg_archived_path    => Setting.mailgates.path.archived
   })
 end
 

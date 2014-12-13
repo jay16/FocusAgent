@@ -31,11 +31,11 @@ class HomeController < ApplicationController
   #
   #  api respondse
   #
-  # ½ÓÊÕserverºô½Ðapi·¢ÐÅ
+  # æŽ¥æ”¶serverå‘¼å«apiå‘ä¿¡
   # params:
-  #   format: ÎÄ¼þ¸ñÊ½
+  #   format: æ–‡ä»¶æ ¼å¼
   #   email:  email
-  #   tar_name: emailÑ¹ËõºóÎÄ¼þÃû
+  #   tar_name: emailåŽ‹ç¼©åŽæ–‡ä»¶å
   #   strftime
   #   md5
   route :get, :post, "/open/mailer" do
@@ -45,14 +45,16 @@ class HomeController < ApplicationController
     strftime = params[:strftime]
 
     if email && tar_name && md5 && strftime
-      log_str  = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "api", tar_name, md5, email, strftime, remote_ip, remote_browser].join(",")
-      log_file = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      csv_file = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", Time.now.to_f.to_s].join("-") + ".csv"]
+      now       = Time.now
+      log_str   = [now.strftime("%Y/%m/%d-%H:%M:%S"), "api", tar_name, md5, email, strftime, remote_ip, remote_browser].join(",")
+      data_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.data, now.strftime("%Y%m%d"))
+      data_file =  File.join(data_path, "trigger.csv")
+      csv_file  = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", now.to_f.to_s].join("-") + ".csv"]
 
-      shell = %Q{echo "%s" >> %s} % [log_str, log_file]
-      puts run_command(shell)
-      shell = %Q{echo "%s" >> %s} % [log_str, csv_file]
-      puts run_command(shell)
+      [ %Q{test -d %s || mkdir -p %s} % [data_path, data_path],
+        %Q{echo "%s" >> %s} % [log_str, data_file],
+        %Q{echo "%s" >> %s} % [log_str, csv_file]
+      ].each { |shell| puts run_command(shell) }
 
       hash = { :code => 1, :info => "deliver..." }
     else
@@ -61,11 +63,11 @@ class HomeController < ApplicationController
     respond_with_json hash, 200
   end
 
-  #½ÓÊÕserverºô½Ð·¢ËÍ²âÊÔÐÅ
-  # filename: emailÑ¹ËõÎÄ¼þÃû
-  # md5     : emailÑ¹ËõÎÄ¼þmd5Öµ
+  #æŽ¥æ”¶serverå‘¼å«å‘é€æµ‹è¯•ä¿¡
+  # filename: emailåŽ‹ç¼©æ–‡ä»¶å
+  # md5     : emailåŽ‹ç¼©æ–‡ä»¶md5å€¼
   # sdate   : server date
-  # mail_type : ²âÊÔÀàÐÍ, 0 ÎªÄÚ²â£¬ 1Îª°áÐÅ
+  # mail_type : æµ‹è¯•ç±»åž‹, 0 ä¸ºå†…æµ‹ï¼Œ 1ä¸ºæ¬ä¿¡
   route :get, :post, "/campaigns/listener.json" do
     filename  =  params[:filename]   
     md5       =  params[:md5] 
@@ -73,14 +75,17 @@ class HomeController < ApplicationController
     mail_type =  params[:mail_type] || "none"
 
     if filename && md5
-      log_str   = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
-      log_file  = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      csv_file = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", Time.now.to_f.to_s].join("-") + ".csv")
+      now       = Time.now
+      log_str   = [now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
+      data_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.data, now.strftime("%Y%m%d"))
+      data_file =  File.join(data_path, "trigger.csv")
+      csv_file  = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", now.to_f.to_s].join("-") + ".csv")
 
-      shell = %Q{echo "%s" >> %s} % [log_str, log_file]
-      puts run_command(shell)
-      shell = %Q{echo "%s" >> %s} % [log_str, csv_file]
-      puts run_command(shell)
+      [ %Q{test -d %s || mkdir -p %s} % [data_path, data_path],
+        %Q{echo "%s" >> %s} % [log_str, data_file],
+        %Q{echo "%s" >> %s} % [log_str, csv_file]
+      ].each { |shell| puts run_command(shell) }
+
 
       hash = { :code => 1, :info => "deliver..." }
     else

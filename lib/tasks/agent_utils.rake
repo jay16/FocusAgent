@@ -8,10 +8,18 @@ namespace :agent do
       :app_root_path, :timestamp]
     missings = keys.find_all { |key| not @options.has_key?(key) }
     if missings.empty?
-      puts "check result is successfully."
+      puts "@options' keys  all exist."
     else
       missings.each do |key|
-        "[dangerous] @options missing key - %s" % key
+        puts "[dangerous] @options missing key - %s" % key
+      end
+    end
+    not_exists = keys.find_all { |key| key =~ /_path$/ and not File.exist?(@options[key]) }
+    if not_exists.empty?
+      puts "@options' paths all exist."
+    else
+      not_exists.each do |key|
+        puts "[dangerous] file not eixst - @options[%s] = %s" % [key, @options[key]]
       end
     end
   end
@@ -28,16 +36,25 @@ namespace :agent do
 
   desc "task - mkdir necessary directory paths"
   task :deploy => :simple do
-    public_path = base_on_root_path("public")
-    ["%s %s/{archived,mailgates,mailtem,openapi,pool}",
-     "%s %s/mailtem/mailtest",
-     "%s %s/pool/{data,download,emails,wait,archived}",
-     "%s %s/mailgates/mqueue/{log,wait}",
-     "%s %s/../log"]
-    .each do |shell|
-      execute!(shell % ["mkdir -p", public_path])
+    @options.keys
+      .find_all { |key| key =~ /^pool_(.*?)_path$/ }
+      .map { |key| @options[key] }
+      .each { |path| execute!("mkdir -p %s" % path) }
+
+    execute!("mkdir -p %s" % base_on_root_path("log"))
+
+    if ENV["RACK_ENV"] == "test"
+      @options.keys
+        .find_all { |key| key =~ /^mg_(.*?)_path$/ }
+        .map { |key| @options[key] }
+        .each { |path| execute!("mkdir -p %s" % path) }
+
+      @options.keys
+        .find_all { |key| key =~ /^server_path/ }
+        .map { |key| base_on_root_path(File.join("public", @options[key])) }
+        .each { |path| execute!("mkdir -p %s" % path) }
     end
-    puts execute!("tree %s" % public_path)
+    puts execute!("tree %s" % base_on_root_path("public"))
   end
 
   def download_email_from_server(options)

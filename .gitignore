@@ -20,6 +20,8 @@
 /vendor
 /log/*.log
 /tmp
+/public/*
+
 
 #add myself
 *.log

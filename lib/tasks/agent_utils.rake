@@ -57,14 +57,18 @@ namespace :agent do
     end
     shell = "cd %s && %s %s" % [pool_download_path, command_md5, tar_file_name]
     ret = execute!(shell)
-    if ret[1].split(" ")[0].chomp != md5_value 
-      puts "[failure] md5 not match!"
+    md5_res = ret[1].split[0].chomp 
+    if md5_res != md5_value 
+      puts "[failure] md5 not match:\n\texpected: %s\n\tget: %s" % [md5, md5_res]
       return false
     end
+    action_logger("download", tar_file_name)
 
     # extract email tar file to /mailgates/mqueue/wait
     shell = "cd %s && tar -xzvf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
     execute!(shell)
+    
+    archived_file(File.join(pool_download_path, tar_file_name), options)
     return true
   end
 
@@ -80,54 +84,67 @@ namespace :agent do
       return false
     end
     FileUtils.mv(email_file_path, mg_wait_path)
+    action_logger("move", email_file_path)
     return true
   end
-  def download_mailtest_files_from_server(pool_download_path, pool_emails_path, server_ip, file_name, md5)
-    download_url = "http://%s/mailtem/mailtest/%s" % [server_ip, file_name]
+
+  # sperator line
+
+  def download_mailtest_emails_from_server(options)
+    server_ip          = options[:server_ip]
+    tar_file_name      = options[:tar_file_name]
+    md5_value          = options[:md5_value]
+    command_md5        = options[:command_md5]
+    pool_download_path = options[:pool_download_path]
+    pool_emails_path   = options[:pool_emails_path]
+
+    download_url = "http://%s/mailtem/mailtest/%s" % [server_ip, tar_file_name]
     shell = "cd %s && wget %s" % [pool_download_path, download_url]
     execute!(shell)
    
-    file_path = File.join(pool_download_path,file_name)
-    unless File.exist?(file_path)
-      puts "[failure] file not exist - %s" % file_path
+    tar_file_path = File.join(pool_download_path, tar_file_name)
+    unless File.exist?(tar_file_path)
+      puts "[failure] file not exist - %s" % tar_file_path
       return false
     end
 
-    shell = "cd %s && md5sum %s" % [pool_download_path, file_name]
+    shell = "cd %s && %s %s" % [pool_download_path, command_md5, tar_file_name]
     ret = execute!(shell)
-    md5_res = ret[0].split(" ")[0].chomp
-    if md5_res != md5
-      puts "[failure] md5 not match:\nexpected: %s\nget: %s" % [md5, md5_res]
+    md5_res = ret[1].split[0].chomp 
+    if md5_res != md5_value
+      puts "[failure] md5 not match:\n\texpected: %s\n\tget: %s" % [md5, md5_res]
       return false
     end
+    action_logger("download", tar_file_name)
 
-    shell = "cd %s && tar -xzvf %s -C %s" % [pool_download_path, file_name, pool_emails_path]
-    execute!(tar_str)
+    shell = "cd %s && tar -xzvf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
+    execute!(shell)
+    archived_file(File.join(pool_download_path, tar_file_name), options)
+    return true
   end
    
-  def move_mailtest_emails_to_mailgates_wait (directory_path, dest_path)
-    domains = []
-    Dir.glob(direcotry_path) do |dir_path|
-      dir_name = File.basename(dir_pat)
-      next if %w[. ..].include?(dir_name)
+  def move_mailtest_emails_to_mailgates_wait(mailtest_path, options)
+    Dir.glob(mailtest_path + "/*").each do |dir_path|
       next unless File.directory?(dir_path)
 
-      domains.push({:domain => dir, :path => dir_path}) 
-    end
-    domains.uniq.each do |hash|
-      puts "[mailtest] domain: #{hash[:domain]}"
-      Dir.glob(hash[:path] + "/.eml") do |email|
-        file_path = File.join(hash[:path], email)
-        FileUtils.mv(file_path,@wait_path)
+      Dir.glob(dir_path + "/*.eml") do |email_file_path|
+        FileUtils.mv(email_file_path, options[:mg_wait_path])
+        action_logger("move", email_file_path)
       end
     end
+    FileUtils.rm_rf(mailtest_path)
   end
 
-  def write_action_logger(log_type, options)
-    logger_path = File.join(options[:pool_data_path], log_type + ".csv")
+  def action_logger(action_type, file_path="unset", options=@options)
+    logger_path = File.join(options[:pool_data_path], options[:timestamp], action_type + ".csv")
     timestamp   = Time.now.strftime("%Y/%m/%d %H:%M:%S")
-    log_content = [timestamp, File.basename(options[:tar_file_name] || options[:email_file_path])].join(",")
+    log_content = [timestamp, File.basename(file_path || "empty")].join(",")
     shell = %Q{echo "%s" >> %s} % [log_content, logger_path]
     execute!(shell)
+  end
+
+  def archived_file(file_path, options)
+    archived_path = File.join(options[:pool_archived_path], options[:timestamp])
+    FileUtils.mv(file_path, archived_path)
   end
 end

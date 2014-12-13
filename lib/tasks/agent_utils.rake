@@ -164,4 +164,25 @@ namespace :agent do
     archived_path = File.join(options[:pool_archived_path], options[:timestamp])
     FileUtils.mv(file_path, archived_path)
   end
+
+  def lasttime(info, &block)
+    now  = Time.now
+    puts "Started at %s" % now.strftime("%Y-%m-%d %H:%M:%S")
+    bint = now.to_f
+    yield
+    now  = Time.now
+    eint = now.to_f
+    printf("Completed %s in %-10s - %s\n", now.strftime("%Y-%m-%d %H:%M:%S"), "[%dms]" % ((eint - bint)*1000).to_i, info)
+  end
+
+  def uniq_task(t)  
+    $0 = ["rake", t.name].join(":")  
+    #raise "This task is running!!" 
+    if %x{ps aux|grep #{$0}|awk '{print $11}'}.split("\n").find_all{|x| x==$0 }.size > 1  
+      return false
+    else
+      return true
+    end
+  end  
+  
 end

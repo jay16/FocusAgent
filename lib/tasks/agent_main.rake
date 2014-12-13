@@ -42,13 +42,19 @@ namespace :agent do
       archived_file(file_path, @options)
     end
   end
-  task :main => :simple do
-    [@options[:pool_data_path], @options[:pool_archived_path]].each do |path|
-      shell = "cd %s && test -d %s || mkdir %s" % [path, @options[:timestamp], @options[:timestamp]]
-      execute!(shell)
-    end
+  task :main => :simple do |t|
+    lasttime "Rake Task agent:main" do
+      if uniq_task(t)  
+        [@options[:pool_data_path], @options[:pool_archived_path]].each do |path|
+          shell = "cd %s && test -d %s || mkdir %s" % [path, @options[:timestamp], @options[:timestamp]]
+          execute!(shell)
+        end
 
-    Rake::Task["agent:open_api"].invoke
-    Rake::Task["agent:mailtest"].invoke
+        Rake::Task["agent:open_api"].invoke
+        Rake::Task["agent:mailtest"].invoke
+      else
+        puts "Last Task is running."
+      end
+    end
   end
 end

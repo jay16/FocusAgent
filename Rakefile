@@ -14,9 +14,10 @@ end
 
 task :simple do
   require "settingslogic"
-  ENV["APP_ROOT_PATH"] = root = Dir.pwd
-  ENV["RACK_ENV"] = "development"
-  load "%s/app/models/setting.rb" % root
+  @options ||= {}
+  ENV["RACK_ENV"] = @options[:rack_env] = "test"
+  ENV["APP_ROOT_PATH"] = @options[:app_root_path] = Dir.pwd
+  load "%s/app/models/setting.rb" % @options[:app_root_path]
 
   def execute!(shell)
     puts shell
@@ -24,6 +25,36 @@ task :simple do
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
   end 
+
+  @options[:os_platform] = `test -f /etc/issue && cat /etc/issue | head -n 1 || uname -s`.to_s.strip
+  @options[:command_md5] = case @options[:os_platform]
+  when "Linux"  then Setting.command.linux.md5
+  when "Darwin" then Setting.command.darwin.md5
+  else Setting.command.linux.md5
+  end
+
+  def base_on_root_path(path)
+    if @options.has_key?(:app_root_path)
+      File.join(@options[:app_root_path], path)
+    else
+      raise "[dangerous] @options missing key - :app_root_path"
+    end
+  end
+
+  @options.merge!({
+    :timestamp           => Time.now.strftime("%Y%m%d"),
+    :server_ip           => Setting.server.ip,
+    :pool_wait_path      => base_on_root_path(Setting.pool.wait),
+    :pool_download_path  => base_on_root_path(Setting.pool.download),
+    :pool_emails_path    => base_on_root_path(Setting.pool.emails),
+    :pool_archived_path  => base_on_root_path(Setting.pool.archived),
+    :pool_data_path      => base_on_root_path(Setting.pool.data),
+    :server_path_download=> Setting.server.path.download,
+    :server_path_mailtest=> Setting.server.path.mailtest,
+    :mg_wait_path        => base_on_root_path(Setting.mailgates.path.wait),
+    :mg_log_path         => base_on_root_path(Setting.mailgates.path.log),
+    :mg_archived_path    => base_on_root_path(Setting.mailgates.path.archived)
+  })
 end
 
 Dir.glob('lib/tasks/*.rake').each { |file| load file }

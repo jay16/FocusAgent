@@ -47,11 +47,11 @@ class HomeController < ApplicationController
     if email && tar_name && md5 && strftime
       log_str  = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "api", tar_name, md5, email, strftime, remote_ip, remote_browser].join(",")
       log_file = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      wget_file = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", Time.now.to_f.to_s].join("-") + ".wget"]
+      csv_file = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", Time.now.to_f.to_s].join("-") + ".csv"]
 
       shell = %Q{echo "%s" >> %s} % [log_str, log_file]
       puts run_command(shell)
-      shell = %Q{echo "%s" >> %s} % [log_str, wget_file]
+      shell = %Q{echo "%s" >> %s} % [log_str, csv_file]
       puts run_command(shell)
 
       hash = { :code => 1, :info => "deliver..." }
@@ -72,16 +72,14 @@ class HomeController < ApplicationController
     #sdate     =  params[:sdate]
     mail_type =  params[:mail_type] || "none"
 
-    # {"filename"=>"155_MailTest_20130815140504", "md5"=>"9d735fdf90eeeba072e0e13b7295349a", "sdate"=>"1376546705",            "mail_type"=>"0"}
-    #
     if filename && md5
       log_str   = [Time.now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
       log_file  = File.join(ENV["APP_ROOT_PATH"],"log","open-api.log")
-      wget_file = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", Time.now.to_f.to_s].join("-") + ".wget")
+      csv_file = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", Time.now.to_f.to_s].join("-") + ".csv")
 
       shell = %Q{echo "%s" >> %s} % [log_str, log_file]
       puts run_command(shell)
-      shell = %Q{echo "%s" >> %s} % [log_str, wget_file]
+      shell = %Q{echo "%s" >> %s} % [log_str, csv_file]
       puts run_command(shell)
 
       hash = { :code => 1, :info => "deliver..." }

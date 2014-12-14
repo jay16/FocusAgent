@@ -15,10 +15,11 @@ end
 task :simple do
   require "settingslogic"
   @options ||= {}
-  ENV["RACK_ENV"] = @options[:rack_env] = "test"
+  @options[:rack_env] = ENV["RACK_ENV"] ||= "test"
   ENV["APP_ROOT_PATH"] = @options[:app_root_path] = Dir.pwd
   load "%s/app/models/setting.rb" % @options[:app_root_path]
 
+  puts @options[:rack_env]
   def execute!(shell)
     puts shell
     IO.popen(shell) do |stdout| 

@@ -15,32 +15,21 @@ module ApplicationHelper
     end.unshift($?.exitstatus.zero?)
   end 
 
-  def ps_result(title, pid)
+  def ps_result(pid)
+    status, *result = run_command("ps aux | grep PID | grep -v 'grep'")
+    title = result.first.split
+    
     ps = "ps aux | grep #{pid} | grep -v 'grep'"
     status, *result = run_command(ps)
-    keywords = ["ruby", ENV["APP_ROOT_PATH"],"passenger", "thin"]
-    result = result.find_all{ |i| keywords.any?(&i.method(:include?)) }
-    if result.empty?
-      ["result is empty - ", ps].join
-    else
-      row = result.first.split
-      row.first(title.length-1).push(row.last(row.length-title.length+1).join(" "))
-    end
+    result.map do |line|
+      row = line.split
+      row.first(title.length-1)
+        .push(row.last(row.length-title.length+1).join(" "))
+    end.unshift(title)
   end
 
   def agent_process_info
-    status, *result = run_command("ps aux | grep PID | grep -v 'grep'")
-    title = result.first.split
-    main_process = ps_result(title, Process.pid)
-
-    %w(agent_wget agent_mv2wait).map do |pid_file|
-      pid_path    = File.join(ENV["APP_ROOT_PATH"],"tmp", [pid_file, "pid"].join("."))
-      if File.exist?(pid_path) and !(lines = IO.readlines(pid_path)).empty?
-        ps_result(title, lines[0].strip)
-      else
-        ["pid_file not found - ", pid_path].join
-      end
-    end.unshift(main_process).unshift(title)
+    ps_result(Process.pid)
   end
 
   def raw(html)
@@ -48,5 +37,16 @@ module ApplicationHelper
   end
   def str2time(datestr, format="%Y-%m-%d %H:%M:%S")
     DateTime.strptime(datestr, format).to_time
+  end
+
+  def pool_data_info(type, timestamp = Time.now.strftime("%Y%m%d"))
+    pool_data_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.data, timestamp)
+    pool_data_file = File.join(pool_data_path, type + ".csv")
+    if not File.exist?(pool_data_file)
+      ["nodata", "nodata"]
+    else
+      lines = IO.readlines(pool_data_file)
+      [lines[-1].split(",")[0], lines.length]
+    end
   end
 end

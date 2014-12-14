@@ -3,7 +3,8 @@ default: &default
     title: FocusMail代理
     favicon: ./images/favicon.gif
   server:
-    ip: localhost:3000 
+    ip: mailhok.com
+    ip2: 10.160.22.79
     path:
       download: /openapi
       mailtest: /mailtem/mailtest
@@ -20,13 +21,15 @@ default: &default
     mode: 777
     path:
       wait: /mailgates/mqueue/wait
-      log: /mailgates/mqueue/log/mgmailerd.log
+      log: /mailgates/mqueue/log
       archived: /mailgates/log_archive
   command:
     darwin:
       md5: "md5 -r"
     linux:
       md5: "md5sum"
+  open:
+    token: "hello"
 
 production:
   <<: *default
@@ -63,3 +66,5 @@ test:
       md5: "md5 -r"
     linux:
       md5: "md5sum"
+  open:
+    token: "Focus$_01"

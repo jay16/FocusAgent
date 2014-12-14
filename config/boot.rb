@@ -68,31 +68,6 @@ ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 `chown -R #{Setting.mailgates.user}:#{Setting.mailgates.group} #{root_path}`
 `chmod -R #{Setting.mailgates.mode} #{root_path}`
 
-def kill_agent_process_if_exist(script_file, pid_file)
-  if File.exist?(pid_file) and !(lines = IO.readlines(pid_file)).empty?
-    pid = lines[0].strip
-    ps = "ps aux | grep #{pid} | grep -v 'grep'"
-    puts "execute shell - #{ps}"
-    status, *result = run_command(ps)
-    if status and result.join.include?(script_file)
-      `kill -9 #{pid}`
-      status, *result = run_command(ps)
-      puts "kill -9 #{pid} " + (result.empty? ?  "successfully!" : "failure!")
-    end
-  end
-end
-
-tmp_path    = "%s/tmp" % root_path
-script_path = "%s/lib/script" % root_path
-%w(agent_wget agent_mv2wait).each do |p|
-  script_file = File.join(script_path, [p, "rb"].join("."))
-  pid_file    = File.join(tmp_path, [p, "pid"].join("."))
-
-  # kill exist old agent process 
-  # before startup new agent process
-  kill_agent_process_if_exist(script_file, pid_file)
-end
-
 # run this then startup successfully
 # record start log in log/startup.log
 ENV["DATE_STARTUP"] = Time.now.to_i.to_s #strftime("%Y-%m-%d %H:%M:%S")

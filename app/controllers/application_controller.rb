@@ -12,7 +12,7 @@ class ApplicationController < Sinatra::Base
   helpers HomeHelper
   helpers Sinatra::FormHelpers
   
-  register Sinatra::Reloader if development?
+  register Sinatra::Reloader if development? or test?
   register Sinatra::MultiRoute
   register Sinatra::Flash
 
@@ -47,14 +47,19 @@ class ApplicationController < Sinatra::Base
   # return array with command result
   # [execute status, execute result] 
   def run_command(cmd)
-    IO.popen(cmd) do |stdout|
+    puts "execute shell:\n\t%s" % cmd
+    result = IO.popen(cmd) do |stdout|
       stdout.reject(&:empty?)
     end.unshift($?.exitstatus.zero?)
+    puts "execute status: %s" % result[0]
+    puts "execute result:\n"
+    result[1..-1].each { |line| puts "\t%s" % line } if result.length > 1
+    return result
   end 
 
   def print_format_logger
     hash = params || {}
-    info = {:ip => remote_ip, :browser => remote_browser}
+    info = {ip: remote_ip, browser: remote_browser}
     params = hash.merge(info)
     log_info = %Q{
 #{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}
@@ -83,11 +88,12 @@ Request:\n #{request_body if request.body}
     end
   end
 
-  def respond_with_json _body, code = nil
-    raise "code is necessary!" unless _body.has_key?(:code)
+  def respond_with_json hash, code = nil
+    hash.perfect!
+    raise "code is necessary!" unless hash.has_key?(:code)
     content_type "application/json"
-    body   _body.to_json
-    status code || _body[:code]
+    body   hash.to_json
+    status code || 200
   end
 
   #alias_method :respond_to_api, :respond_with_json

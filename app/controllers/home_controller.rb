@@ -17,7 +17,7 @@ class HomeController < ApplicationController
   get "/public/openapi/:file", "/openapi/:file" do
     file_name = params[:file]
     file_path = "%s/public/openapi/%s" % [ENV["APP_ROOT_PATH"], file_name]
-    send_file(file_path, :filename => file_name)
+    send_file(file_path, filename: file_name)
   end
 
   # test api as server
@@ -25,7 +25,7 @@ class HomeController < ApplicationController
   get "/mailtem/mailtest/:file" do
     file_name = params[:file]
     file_path = "%s/public/mailtem/mailtest/%s" % [ENV["APP_ROOT_PATH"], file_name]
-    send_file(file_path, :filename => file_name)
+    send_file(file_path, filename: file_name)
   end
 
   #
@@ -56,9 +56,9 @@ class HomeController < ApplicationController
         %Q{echo "%s" >> %s} % [log_str, csv_file]
       ].each { |shell| puts run_command(shell) }
 
-      hash = { :code => 1, :info => "deliver..." }
+      hash = { code: 1, info: "deliver..." }
     else
-      hash = { :code => -1, :info => "less data:#{params.to_s}" }
+      hash = { code: -1, info: "less data:#{params.to_s}" }
     end
     respond_with_json hash, 200
   end
@@ -86,10 +86,9 @@ class HomeController < ApplicationController
         %Q{echo "%s" >> %s} % [log_str, csv_file]
       ].each { |shell| puts run_command(shell) }
 
-
-      hash = { :code => 1, :info => "deliver..." }
+      hash = { code: 1, info: "deliver..." }
     else
-      hash = { :code => -1, :info => "less data:#{params.to_s}" }
+      hash = { code: -1, info: "less data:#{params.to_s}" }
     end
 
     respond_with_json hash, 200

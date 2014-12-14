@@ -7,8 +7,9 @@
   # common page
   /         
 
-  # administrator page
+  # admin page
   /cpanel
+  /cpanel/open
 ```
 
 ### MENTTION
@@ -18,10 +19,6 @@
 
 ### TODO
 
-  [ ]. switch shell command [md5]
-  [ ]. action record data
-  [ ]. api for record data
-  [ ]. page design
 
 ### COMMAND
 
@@ -42,7 +39,7 @@
     bundle exec rake agent:main
 ```
 
-### nginx configure
+### NGINX CONFIGURE
 
 ```
     server {
@@ -56,3 +53,24 @@
         }
     }
 ```
+
+### OTHER
+
+````
+/public
+├── mailgates           for local test
+│   ├── log_archive
+│   └── mqueue
+│       ├── log
+│       └── wait
+├── mailtem             for server test
+│   └── mailtest
+├── openapi             for server test
+└── pool                for local storage
+    ├── archived
+    ├── data
+    ├── download
+    ├── emails
+    ├── mailtest
+    └── wait
+````

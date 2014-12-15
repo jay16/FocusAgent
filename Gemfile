@@ -21,7 +21,7 @@ gem "coffee-script", "~>2.2.0"
 
 #gem "thin", "~>1.6.2"
 #gem "unicorn", "~>4.8.3"
-gem "passenger", "~>4.0.53"
+gem "passenger", "~>4.0.10"
 gem "rake", "~>10.3.2"
 gem "settingslogic", "~>2.0.9"
 #gem "time_diff", "~>0.3.0"

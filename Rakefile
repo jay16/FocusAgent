@@ -19,9 +19,8 @@ task :simple do
   ENV["APP_ROOT_PATH"] = @options[:app_root_path] = Dir.pwd
   load "%s/app/models/setting.rb" % @options[:app_root_path]
 
-  puts @options[:rack_env]
   def execute!(shell)
-    puts shell
+    puts shell.gsub(@options[:app_root_path], "=>")
     IO.popen(shell) do |stdout| 
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)

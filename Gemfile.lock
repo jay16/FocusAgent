@@ -49,7 +49,7 @@ PLATFORMS
 DEPENDENCIES
   coffee-script (~> 2.2.0)
   haml (~> 4.0.5)
-  passenger (~> 4.0.53)
+  passenger (~> 4.0.10)
   rake (~> 10.3.2)
   sass (~> 3.3.7)
   settingslogic (~> 2.0.9)

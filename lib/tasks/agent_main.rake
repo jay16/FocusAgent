@@ -45,6 +45,8 @@ namespace :agent do
   task :main => :simple do |t|
     lasttime "Rake Task agent:main" do
       if uniq_task(t)  
+        puts @options[:rack_env]
+        puts execute!("whoami").join(" - ")
         [@options[:pool_data_path], @options[:pool_archived_path]].each do |path|
           shell = "cd %s && test -d %s || mkdir %s" % [path, @options[:timestamp], @options[:timestamp]]
           execute!(shell)

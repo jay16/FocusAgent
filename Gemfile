@@ -15,18 +15,18 @@ gem "sinatra-flash", "~>0.3.0"
 #assets
 gem "haml", "~> 4.0.5"
 gem "sass", "~>3.3.7"
-gem "therubyracer", "~>0.12.1"
+gem "therubyracer", "~>0.11.4"
 gem "coffee-script", "~>2.2.0"
-gem "whenever", "~>0.9.2"
+#gem "whenever", "~>0.9.2"
 
 #gem "thin", "~>1.6.2"
 #gem "unicorn", "~>4.8.3"
 gem "passenger", "~>4.0.53"
 gem "rake", "~>10.3.2"
 gem "settingslogic", "~>2.0.9"
-gem "time_diff", "~>0.3.0"
+#gem "time_diff", "~>0.3.0"
 
 group :development do
-  gem "rspec", "~>3.1.0"
+#  gem "rspec", "~>3.1.0"
 end
 

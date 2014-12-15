@@ -20,9 +20,6 @@
       %td startup 
       %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
     %tr
-      %td runtime
-      %td= Time.diff(startup, Time.now)[:diff]
-    %tr
       %td root
       %td= ENV["APP_ROOT_PATH"]
 

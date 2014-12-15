@@ -60,8 +60,16 @@ describe "APIController" do
     }
   end
 
-  it "should receive [deliver..] when open#api" do
+  it "should receive [deliver..] when open#mailer" do
     post "/open/mailer", generate_email_file_and_params
+
+    expect(last_response.status).to eq(200)
+    res = JSON.parse(last_response.body)
+    expect(res["code"]).to eq(1)
+    expect(res["info"]).to eq("deliver...")
+  end
+  it "should receive [deliver..] when open#mailer.json" do
+    post "/open/mailer.json", generate_email_file_and_params
 
     expect(last_response.status).to eq(200)
     res = JSON.parse(last_response.body)
@@ -70,6 +78,14 @@ describe "APIController" do
   end
 
   it "should receive [deliver..] when campaigns#listener" do
+    post "/campaigns/listener", generate_mailtest_files_and_params
+
+    expect(last_response.status).to eq(200)
+    res = JSON.parse(last_response.body)
+    expect(res["code"]).to eq(1)
+    expect(res["info"]).to eq("deliver...")
+  end
+  it "should receive [deliver..] when campaigns#listener.json" do
     post "/campaigns/listener.json", generate_mailtest_files_and_params
 
     expect(last_response.status).to eq(200)

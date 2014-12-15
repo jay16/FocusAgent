@@ -12,19 +12,16 @@ gem "sinatra-contrib", "~>1.4.2"
 gem "sinatra-flash", "~>0.3.0"
 #gem "rest-client", "~>1.7.2"
 
-#db
-#gem "dm-core"
-#gem "dm-migrations"
-#gem "dm-timestamps"
-#gem "dm-sqlite-adapter"
-
 #assets
 gem "haml", "~> 4.0.5"
 gem "sass", "~>3.3.7"
 gem "therubyracer", "~>0.12.1"
 gem "coffee-script", "~>2.2.0"
+gem "whenever", "~>0.9.2"
 
-gem "thin", "~>1.6.2"
+#gem "thin", "~>1.6.2"
+#gem "unicorn", "~>4.8.3"
+gem "passenger", "~>4.0.53"
 gem "rake", "~>10.3.2"
 gem "settingslogic", "~>2.0.9"
 gem "time_diff", "~>0.3.0"

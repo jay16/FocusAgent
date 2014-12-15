@@ -1,31 +1,32 @@
-%h1 DashBoard
+.row
+  %h1 DashBoard
 
-%table.table.table-bordered.table-striped
-  %thead
-    %tr
-      %th title
-      %th datetime
-      %td data
-  %tbody
-    - startup = Time.at(ENV["DATE_STARTUP"].to_i)
-    %tr
-      %td startup 
-      %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
-      %td
-    %tr
-      %td sysdate
-      %td= Time.now.strftime("%Y/%m/%d %H:%M:%S")
-      %td
-    %tr
-      %td trigger
-      - pool_data_info("trigger").each do |item|
-        %td= item
-    %tr
-      %td download
-      - pool_data_info("download").each do |item|
-        %td= item
-    %tr
-      %td move
-      - pool_data_info("move").each do |item|
-        %td= item
-      %td
+.row
+  %table.table.table-bordered.table-striped
+    %thead
+      %tr
+        %th title
+        %th datetime
+        %td data
+    %tbody
+      - startup = Time.at(ENV["DATE_STARTUP"].to_i)
+      %tr
+        %td startup 
+        %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
+        %td
+      %tr
+        %td sysdate
+        %td= Time.now.strftime("%Y/%m/%d %H:%M:%S")
+        %td
+      %tr
+        %td trigger
+        - pool_data_info("trigger").each do |item|
+          %td= item
+      %tr
+        %td download
+        - pool_data_info("download").each do |item|
+          %td= item
+      %tr
+        %td move
+        - pool_data_info("move").each do |item|
+          %td= item

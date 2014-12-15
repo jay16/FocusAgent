@@ -14,8 +14,8 @@
 
 ### MENTTION
 
-  1. shell command get md5 value - Darwin [md5 -r], Linux [md5sum]
-  2. user and group should [webmail:webmail]
+  1. shell command caculate md5 value - Darwin [md5 -r], Linux [md5sum]
+  2. application and rake should execute with [webmail:webmail]
 
 ### TODO
 

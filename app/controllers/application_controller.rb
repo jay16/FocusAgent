@@ -61,10 +61,11 @@ class ApplicationController < Sinatra::Base
     hash = params || {}
     info = {ip: remote_ip, browser: remote_browser}
     params = hash.merge(info)
+    request_info = request.body ? %Q{Request:\n #{request_body }} : ""
     log_info = %Q{
 #{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}
 Parameters:\n #{params.to_s}
-Request:\n #{request_body if request.body}
+#{request_info}
     }
     puts log_info
     logger.info log_info

@@ -29,4 +29,3 @@ gem "settingslogic", "~>2.0.9"
 group :development do
 #  gem "rspec", "~>3.1.0"
 end
-

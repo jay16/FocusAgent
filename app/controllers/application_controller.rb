@@ -46,15 +46,17 @@ class ApplicationController < Sinatra::Base
   # execute linux shell command
   # return array with command result
   # [execute status, execute result] 
-  def run_command(cmd)
-    puts "execute shell:\n\t%s" % cmd
-    result = IO.popen(cmd) do |stdout|
-      stdout.reject(&:empty?)
+  def run_command(shell, whether_show_log=true)
+    _result = IO.popen(shell) do |stdout| 
+      stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
-    puts "execute status: %s" % result[0]
-    puts "execute result:\n"
-    result[1..-1].each { |line| puts "\t%s" % line } if result.length > 1
-    return result
+    if true or !_result[0] or whether_show_log
+      _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+      _status = _result[0]
+      _res    = _result[1..-1].map { |line| "\t\t" + line }.join if _result.length > 1 
+      puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
+    end
+    return _result
   end 
 
   def print_format_logger

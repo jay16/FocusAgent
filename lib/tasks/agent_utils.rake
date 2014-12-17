@@ -8,7 +8,7 @@ namespace :agent do
       :app_root_path, :timestamp]
     missings = keys.find_all { |key| not @options.has_key?(key) }
     if missings.empty?
-      puts "@options' keys  all exist."
+      puts "@options' keys  all ok."
     else
       missings.each do |key|
         puts "[dangerous] @options missing key - %s" % key
@@ -16,7 +16,7 @@ namespace :agent do
     end
     not_exists = keys.find_all { |key| key =~ /_path$/ and not File.exist?(@options[key]) }
     if not_exists.empty?
-      puts "@options' paths all exist."
+      puts "@options' paths all ok."
     else
       not_exists.each do |key|
         puts "[dangerous] file not eixst - @options[%s] = %s" % [key, @options[key]]
@@ -28,7 +28,7 @@ namespace :agent do
       not File.exist?(File.join(@options[:app_root_path], dir))
     end
     if not_exists.empty?
-      puts "basic tmp dir all exist."
+      puts "basic tmp dir all ok."
     else
       not_exists.each do |dir|
         puts "[warn] tmp direcoty not exist - %s" % dir
@@ -37,11 +37,9 @@ namespace :agent do
 
     # tmp config files
     app_root_path = File.read(File.join(@options[:app_root_path], "tmp/app_root_path")).strip rescue "not exist"
-    if app_root_path == @options[:app_root_path]
-      puts "tmp config data is correct."
-    else
-      puts "tmp config data is incorrect. - %s" % app_root_path
-    end
+    puts "tmp/app_root_path is %s." % (app_root_path == @options[:app_root_path] ? "ok" : "incorrect")
+    pool_data_path = File.read(File.join(@options[:app_root_path], "tmp/pool_data_path")).strip rescue "not exist"
+    puts "tmp/pool_data_path is %s." % (pool_data_path == @options[:pool_data_path] ? "ok" : "incorrect")
   end
 
   desc "task - clear tmp files"
@@ -51,7 +49,7 @@ namespace :agent do
       shell = "rm -rf %s/*" % @options[key]
       execute!(shell)
     end
-    puts execute!("tree %s" % base_on_root_path("public"))
+    execute!("tree %s" % base_on_root_path("public"))
   end
 
   desc "task - mkdir necessary directory paths"
@@ -79,7 +77,8 @@ namespace :agent do
       tmp_dir = File.join(@options[:app_root_path], dir)
       execute!("test -d %s || mkdir -p %s" % [tmp_dir, tmp_dir])
     end
-    execute!("echo %s >> %s/tmp/app_root_path" % [@options[:app_root_path], @options[:app_root_path]])
+    execute!("echo %s > %s/tmp/app_root_path" % [@options[:app_root_path], @options[:app_root_path]])
+    execute!("echo %s > %s/tmp/pool_data_path" % [@options[:pool_data_path], @options[:app_root_path]])
     puts execute!("tree %s" % base_on_root_path("public"))
   end
 
@@ -90,7 +89,7 @@ namespace :agent do
     pool_download_path = options[:pool_download_path]
     pool_emails_path   = options[:pool_emails_path]
     command_md5        = options[:command_md5]
-    shell = "cd %s && wget %s" % [pool_download_path, download_url]
+    shell = "cd %s && wget --quiet %s" % [pool_download_path, download_url]
     execute!(shell)
    
     file_path = "%s/%s" % [pool_download_path, tar_file_name]
@@ -108,7 +107,7 @@ namespace :agent do
     action_logger("download", tar_file_name)
 
     # extract email tar file to /mailgates/mqueue/wait
-    shell = "cd %s && tar -xzvf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
+    shell = "cd %s && tar -xzf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
     execute!(shell)
     
     archived_file(File.join(pool_download_path, tar_file_name), options)
@@ -142,7 +141,7 @@ namespace :agent do
     pool_emails_path   = options[:pool_emails_path]
 
     download_url = "http://%s/mailtem/mailtest/%s" % [server_ip, tar_file_name]
-    shell = "cd %s && wget %s" % [pool_download_path, download_url]
+    shell = "cd %s && wget --quiet %s" % [pool_download_path, download_url]
     execute!(shell)
    
     tar_file_path = File.join(pool_download_path, tar_file_name)
@@ -160,7 +159,7 @@ namespace :agent do
     end
     action_logger("download", tar_file_name)
 
-    shell = "cd %s && tar -xzvf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
+    shell = "cd %s && tar -xzf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
     execute!(shell)
     archived_file(File.join(pool_download_path, tar_file_name), options)
     return true
@@ -210,5 +209,4 @@ namespace :agent do
       return true
     end
   end  
-  
 end

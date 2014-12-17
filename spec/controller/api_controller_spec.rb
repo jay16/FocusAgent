@@ -12,7 +12,7 @@ describe "APIController" do
     File.open("%s/%s" % [base_path, email], "w:utf-8") do |file|
       file.puts "hello world - %s" % Time.now.to_s
     end
-    shell = "cd %s && tar -czvf %s %s && md5 -r %s" % [base_path, tar_name, email, tar_name]
+    shell = "cd %s && tar -czf %s %s && md5 -r %s" % [base_path, tar_name, email, tar_name]
     puts shell
     result = run_command(shell)
     puts result.join("\n")
@@ -43,7 +43,7 @@ describe "APIController" do
       end
     end
 
-    shell = "cd %s && tar -czvf %s.tar.gz %s && md5 -r %s.tar.gz" % [base_path, folder_name, folder_name, folder_name]
+    shell = "cd %s && tar -czf %s.tar.gz %s && md5 -r %s.tar.gz" % [base_path, folder_name, folder_name, folder_name]
     puts shell
     result = run_command(shell)
     puts result

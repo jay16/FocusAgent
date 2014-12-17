@@ -19,13 +19,16 @@ task :simple do
   ENV["APP_ROOT_PATH"] = @options[:app_root_path] = Dir.pwd
   load "%s/app/models/setting.rb" % @options[:app_root_path]
 
-  def execute!(shell)
+  def execute!(shell, whether_show_log = false)
     _result = IO.popen(shell) do |stdout| 
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
-    puts shell.gsub(@options[:app_root_path], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
-    puts "\t\t==> %s" % _result[0]
-    puts _result[1..-1].map { |line| "\t\t" + line }.join("\n") if _result.length > 1 
+    if !_result[0] or whether_show_log
+      _shell  = shell.gsub(@options[:app_root_path], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+      _status = _result[0]
+      _res    = _result[1..-1].map { |line| "\t\t" + line }.join if _result.length > 1 
+      puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
+    end
     return _result
   end 
 

@@ -49,7 +49,7 @@ namespace :agent do
         execute!("whoami")
         [@options[:pool_data_path], @options[:pool_archived_path]].each do |path|
           shell = "cd %s && test -d %s || mkdir %s" % [path, @options[:timestamp], @options[:timestamp]]
-          execute!(shell)
+          execute!(shell, false)
         end
 
         Rake::Task["agent:open_api"].invoke
@@ -60,6 +60,7 @@ namespace :agent do
 
       crontab_data_file = File.join(@options[:pool_data_path], @options[:timestamp], "crontab.csv")
       shell = %Q{echo "%s" >> %s} % [Time.now.strftime("%Y/%m/%d %H:%M:%S"), crontab_data_file] 
+      execute!(shell, false)
     end
   end
 end

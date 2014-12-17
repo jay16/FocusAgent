@@ -74,7 +74,7 @@ class HomeController < ApplicationController
         [ %Q{test -d %s || mkdir -p %s} % [data_path, data_path],
           %Q{echo "%s" >> %s} % [log_str, data_file],
           %Q{echo "%s" >> %s} % [log_str, csv_file]
-        ].each { |shell| puts run_command(shell) }
+        ].each { |shell| run_command(shell) }
 
         hash = { code: 1, info: "deliver..." }
       else

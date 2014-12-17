@@ -5,7 +5,11 @@
 
 ```
   # common page
-  /         
+  /
+
+  # api
+  /open/mailer
+  /campaign/listener
 
   # admin page
   /cpanel
@@ -16,16 +20,21 @@
 
   1. shell command caculate md5 value - Darwin [md5 -r], Linux [md5sum]
   2. application and rake should execute with [webmail:webmail]
+  3. all operation under webmail user
 
 ### TODO
+
 
 
 ### COMMAND
 
 ```
-    # start up
+    # web server
     bundle install
-    bundle exec thin start
+    sh lib/script/unicorn.sh {start|stop|restart}
+
+    # crontab
+    sh lib/script/crontab.sh
 
     # test with RSpec
     bundle exec rspec spec/controller/

@@ -1,6 +1,12 @@
 #!/bin/bash
+
+USER=lijunjie
+APP_PATH=$(pwd)
+
+chown -R ${USER}:${USER} ./
 while true
 do
-     /bin/bash -l -c "cd ~/Code/work/focus_mail_agent && RACK_ENV=production bundle exec rake agent:main"
-     sleep 5
+    pwd
+    su - ${USER} -l -c "cd ${APP_PATH} && RACK_ENV=production bundle exec rake agent:main" #>> ./log/crontab.log 2>1&
+    sleep 5
 done

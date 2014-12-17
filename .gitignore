@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
+Gemfile.lock
 .ruby-version
 .DS_Store
 *.y[a]ml
@@ -19,10 +20,12 @@
 /db/*.sqlite3
 
 # Ignore all logfiles and tempfiles.
+/shared
 /vendor
 /log/*.log
 /tmp
 /public/*
+/log
 
 
 #add myself

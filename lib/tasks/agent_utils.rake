@@ -22,6 +22,26 @@ namespace :agent do
         puts "[dangerous] file not eixst - @options[%s] = %s" % [key, @options[key]]
       end
     end
+
+    # check basic tmp directory
+    not_exists = %w[log tmp tmp/pids].find_all do |dir|
+      not File.exist?(File.join(@options[:app_root_path], dir))
+    end
+    if not_exists.empty?
+      puts "basic tmp dir all exist."
+    else
+      not_exists.each do |dir|
+        puts "[warn] tmp direcoty not exist - %s" % dir
+      end
+    end
+
+    # tmp config files
+    app_root_path = File.read(File.join(@options[:app_root_path], "tmp/app_root_path")).strip rescue "not exist"
+    if app_root_path == @options[:app_root_path]
+      puts "tmp config data is correct."
+    else
+      puts "tmp config data is incorrect. - %s" % app_root_path
+    end
   end
 
   desc "task - clear tmp files"
@@ -54,6 +74,12 @@ namespace :agent do
         .map { |key| base_on_root_path(File.join("public", @options[key])) }
         .each { |path| execute!("mkdir -p %s" % path) }
     end
+
+    %w[log tmp tmp/pids].find_all do |dir|
+      tmp_dir = File.join(@options[:app_root_path], dir)
+      execute!("test -d %s || mkdir -p %s" % [tmp_dir, tmp_dir])
+    end
+    execute!("echo %s >> %s/tmp/app_root_path" % [@options[:app_root_path], @options[:app_root_path]])
     puts execute!("tree %s" % base_on_root_path("public"))
   end
 
@@ -172,7 +198,7 @@ namespace :agent do
     yield
     now  = Time.now
     eint = now.to_f
-    printf("Completed %s in %-10s - %s\n", now.strftime("%Y-%m-%d %H:%M:%S"), "[%dms]" % ((eint - bint)*1000).to_i, info)
+    printf("Completed %s in %s - %s\n\n", now.strftime("%Y-%m-%d %H:%M:%S"), "[%dms]" % ((eint - bint)*1000).to_i, info)
   end
 
   def uniq_task(t)  

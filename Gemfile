@@ -27,5 +27,7 @@ gem "settingslogic", "~>2.0.9"
 #gem "time_diff", "~>0.3.0"
 
 group :development do
-#  gem "rspec", "~>3.1.0"
+  gem "net-ssh", "~>2.7.0"
+  gem "net-scp", "~>1.2.1"
+  gem "rspec", "~>3.1.0"
 end

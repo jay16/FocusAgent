@@ -45,8 +45,8 @@ namespace :agent do
   task :main => :simple do |t|
     lasttime "Rake Task agent:main" do
       if uniq_task(t)  
-        puts @options[:rack_env]
-        puts execute!("whoami").join(" - ")
+        puts "\tenvironment:\t" + @options[:rack_env]
+        execute!("whoami")
         [@options[:pool_data_path], @options[:pool_archived_path]].each do |path|
           shell = "cd %s && test -d %s || mkdir %s" % [path, @options[:timestamp], @options[:timestamp]]
           execute!(shell)
@@ -55,8 +55,11 @@ namespace :agent do
         Rake::Task["agent:open_api"].invoke
         Rake::Task["agent:mailtest"].invoke
       else
-        puts "Last Task is running."
+        puts "\tLast Task is running."
       end
+
+      crontab_data_file = File.join(@options[:pool_data_path], @options[:timestamp], "crontab.csv")
+      shell = %Q{echo "%s" >> %s} % [Time.now.strftime("%Y/%m/%d %H:%M:%S"), crontab_data_file] 
     end
   end
 end

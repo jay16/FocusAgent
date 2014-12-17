@@ -20,10 +20,13 @@ task :simple do
   load "%s/app/models/setting.rb" % @options[:app_root_path]
 
   def execute!(shell)
-    puts shell.gsub(@options[:app_root_path], "=>")
-    IO.popen(shell) do |stdout| 
+    _result = IO.popen(shell) do |stdout| 
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
+    puts shell.gsub(@options[:app_root_path], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+    puts "\t\t==> %s" % _result[0]
+    puts _result[1..-1].map { |line| "\t\t" + line }.join("\n") if _result.length > 1 
+    return _result
   end 
 
   @options[:os_platform] = `test -f /etc/issue && cat /etc/issue | head -n 1 || uname -s`.to_s.strip

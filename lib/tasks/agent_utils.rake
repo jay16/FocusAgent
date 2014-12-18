@@ -38,8 +38,8 @@ namespace :agent do
     # tmp config files
     app_root_path = File.read(File.join(@options[:app_root_path], "tmp/app_root_path")).strip rescue "not exist"
     puts "tmp/app_root_path is %s." % (app_root_path == @options[:app_root_path] ? "ok" : "incorrect")
-    pool_data_path = File.read(File.join(@options[:app_root_path], "tmp/pool_data_path")).strip rescue "not exist"
-    puts "tmp/pool_data_path is %s." % (pool_data_path == @options[:pool_data_path] ? "ok" : "incorrect")
+    pool_wait_path = File.read(File.join(@options[:app_root_path], "tmp/pool_wait_path")).strip rescue "not exist"
+    puts "tmp/pool_wait_path is %s." % (pool_wait_path == @options[:pool_wait_path] ? "ok" : "incorrect")
   end
 
   desc "task - clear tmp files"
@@ -78,7 +78,7 @@ namespace :agent do
       execute!("test -d %s || mkdir -p %s" % [tmp_dir, tmp_dir])
     end
     execute!("echo %s > %s/tmp/app_root_path" % [@options[:app_root_path], @options[:app_root_path]])
-    execute!("echo %s > %s/tmp/pool_data_path" % [@options[:pool_data_path], @options[:app_root_path]])
+    execute!("echo %s > %s/tmp/pool_wait_path" % [@options[:pool_wait_path], @options[:app_root_path]])
     puts execute!("tree %s" % base_on_root_path("public"))
   end
 
@@ -94,14 +94,15 @@ namespace :agent do
    
     file_path = "%s/%s" % [pool_download_path, tar_file_name]
     unless File.exist?(file_path)
-      puts "[failure] file not exist - %s" % tar_file_name 
+      puts_with_space "\t[failure] download tar file not exist - %s" % file_path
       return false
     end
+
     shell = "cd %s && %s %s" % [pool_download_path, command_md5, tar_file_name]
     ret = execute!(shell)
     md5_res = ret[1].split[0].chomp 
     if md5_res != md5_value 
-      puts "[failure] md5 not match:\n\texpected: %s\n\tget: %s" % [md5, md5_res]
+      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5, md5_res]
       return false
     end
     action_logger("download", tar_file_name)
@@ -118,14 +119,20 @@ namespace :agent do
     mg_wait_path = options[:mg_wait_path]
 
     unless File.exist?(email_file_path)
-      puts "[failure] file not exist - %s" % email_file_path
+      puts_with_space "\t[failure] email file not exist - %s" % email_file_path
       return false
     end
     unless File.exist?(mg_wait_path)
-      puts "[failure] directory not exist - %s" % mg_wait_path
+      puts_with_space "\t[failure] mg#wait directory not exist - %s" % mg_wait_path
       return false
     end
-    FileUtils.mv(email_file_path, mg_wait_path)
+
+    code = FileUtils.mv(email_file_path, mg_wait_path) rescue -1
+    if code == -1
+      puts_with_space "\t[failure] move email to mg#wait.\n$!$\tsource file: %s\n$!$\ttarget path: %s" % [email_file_path, mg_wait_path]
+      return false
+    end
+
     action_logger("move", email_file_path)
     return true
   end
@@ -146,7 +153,7 @@ namespace :agent do
    
     tar_file_path = File.join(pool_download_path, tar_file_name)
     unless File.exist?(tar_file_path)
-      puts "[failure] file not exist - %s" % tar_file_path
+      puts_with_space "\t[failure] tar file not exist - %s" % tar_file_path
       return false
     end
 
@@ -154,13 +161,14 @@ namespace :agent do
     ret = execute!(shell)
     md5_res = ret[1].split[0].chomp 
     if md5_res != md5_value
-      puts "[failure] md5 not match:\n\texpected: %s\n\tget: %s" % [md5, md5_res]
+      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5, md5_res]
       return false
     end
     action_logger("download", tar_file_name)
 
     shell = "cd %s && tar -xzf %s -C %s" % [pool_download_path, tar_file_name, pool_emails_path]
     execute!(shell)
+
     archived_file(File.join(pool_download_path, tar_file_name), options)
     return true
   end
@@ -175,6 +183,7 @@ namespace :agent do
       end
     end
     FileUtils.rm_rf(mailtest_path)
+    return true
   end
 
   def action_logger(action_type, file_path="unset", options=@options)
@@ -190,6 +199,15 @@ namespace :agent do
     FileUtils.mv(file_path, archived_path)
   end
 
+  def archived_bad(file_path, options)
+    pool_bad_path = File.join(options[:pool_bad_path], options[:timestamp])
+
+    shell = "test -d %s || mkdir -p %s" % [pool_bad_path, pool_bad_path]
+    execute!(shell)
+
+    FileUtils.mv(file_path, pool_bad_path)
+  end
+
   def lasttime(info, &block)
     now  = Time.now
     puts "Started at %s" % now.strftime("%Y-%m-%d %H:%M:%S")
@@ -197,7 +215,7 @@ namespace :agent do
     yield
     now  = Time.now
     eint = now.to_f
-    printf("Completed %s in %s - %s\n\n", now.strftime("%Y-%m-%d %H:%M:%S"), "[%dms]" % ((eint - bint)*1000).to_i, info)
+    printf("Completed %s in %s - %s\n\n", now.strftime("%Y-%m-%d %H:%M:%S"), "%dms" % ((eint - bint)*1000).to_i, info)
   end
 
   def uniq_task(t)  
@@ -209,4 +227,10 @@ namespace :agent do
       return true
     end
   end  
+
+  def puts_with_space(text, options=@options)
+    gap_space = options[:gap_space]
+    text.gsub!("$!$", gap_space)
+    puts "%s%s" % [gap_space, text]
+  end
 end

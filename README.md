@@ -16,14 +16,12 @@
   /cpanel/open
 ```
 
-### MENTTION
+### FOCUS
 
-  1. shell command caculate md5 value - Darwin [md5 -r], Linux [md5sum]
-  2. application and rake should execute with [webmail:webmail]
-  3. all operation under webmail user
+  +. all operation under user#webmail 
+  +. shell command caculate md5 value - Darwin [md5 -r], Linux [md5sum]
 
 ### TODO
-
 
 
 ### COMMAND

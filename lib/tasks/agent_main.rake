@@ -9,16 +9,25 @@ namespace :agent do
 
       file_path = File.join(@options[:pool_wait_path], file)
       timestamp, type, tar_file_name, md5, email, strftime, ip = IO.read(file_path).strip.split(/,/) 
+
+      puts_with_space "Deal With API#MD5 %s" % md5
       options = {
-        :download_url => "%s/%s" % [base_url, tar_file_name],
-        :md5_value    => md5,
+        :md5_value     => md5,
+        :download_url  => "%s/%s" % [base_url, tar_file_name],
         :tar_file_name => tar_file_name,
       }
-      download_email_from_server(@options.merge(options))
-      archived_file(file_path, @options)
-    end
-    Dir.glob("%s/*.eml" % @options[:pool_emails_path]) do |email_file_path|
-      move_email_to_mailgates_wait(email_file_path, @options)
+      if download_email_from_server(@options.merge(options))
+        archived_file(file_path, @options)
+        puts_with_space "\tDownload successfully."
+
+        email_file_name = tar_file_name.sub(".tar.gz","")
+        email_file_path = File.join(@options[:pool_emails_path], email_file_name)
+        status_info = move_email_to_mailgates_wait(email_file_path, @options) ? "successfully" : "failure"
+        puts_with_space "\tMove => mg/wait %s." % status_info
+      else
+        archived_bad(file_path, @options)
+        puts_with_space "\tDownload Failure."
+      end
     end
   end
 
@@ -30,20 +39,30 @@ namespace :agent do
 
       file_path = File.join(@options[:pool_wait_path], file)
       timestamp, type, file_name, md5, mail_type, blank, ip = IO.read(file_path).strip.split(/,/) 
+
+      puts_with_space "Deal With Test#MD5 %s" % md5
       tar_file_name = "%s.tar.gz" % file_name
       options = {
         :download_url  => "%s/%s.tar.gz" % [base_url, tar_file_name],
         :md5_value     => md5,
         :tar_file_name => tar_file_name,
       }
-      download_mailtest_emails_from_server(@options.merge(options))
-      mailtest_path = File.join(@options[:pool_emails_path], file_name)
-      move_mailtest_emails_to_mailgates_wait(mailtest_path, @options)
-      archived_file(file_path, @options)
+      if download_mailtest_emails_from_server(@options.merge(options))
+        puts_with_space "\tDownload successfully."
+
+        mailtest_path = File.join(@options[:pool_emails_path], file_name)
+        status_info = move_mailtest_emails_to_mailgates_wait(mailtest_path, @options)
+        puts_with_space "\tMove => mg/wait %s." % status_info
+
+        archived_file(file_path, @options)
+      else
+        archived_bad(file_path, @options)
+        puts_with_space "\tDownload Failure."
+      end
     end
   end
   task :main => :simple do |t|
-    lasttime "Rake Task agent:main" do
+    lasttime "rake#task => %s" % t.name do
       if uniq_task(t)  
         puts "\tenvironment:\t" + @options[:rack_env]
         execute!("whoami")

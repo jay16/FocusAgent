@@ -26,7 +26,7 @@ task :simple do
     if !_result[0] or whether_show_log
       _shell  = shell.gsub(@options[:app_root_path], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
       _status = _result[0]
-      _res    = _result[1..-1].map { |line| "\t\t" + line }.join if _result.length > 1 
+      _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
       puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
     end
     return _result
@@ -54,13 +54,15 @@ task :simple do
     :pool_download_path  => base_on_root_path(Setting.pool.download),
     :pool_emails_path    => base_on_root_path(Setting.pool.emails),
     :pool_archived_path  => base_on_root_path(Setting.pool.archived),
+    :pool_bad_path       => base_on_root_path(Setting.pool.bad),
     :pool_data_path      => base_on_root_path(Setting.pool.data),
     :pool_mailtest_path  => base_on_root_path(Setting.pool.mailtest),
     :server_path_download=> Setting.server.path.download,
     :server_path_mailtest=> Setting.server.path.mailtest,
     :mg_wait_path        => Setting.mailgates.path.wait,
     :mg_log_path         => Setting.mailgates.path.log,
-    :mg_archived_path    => Setting.mailgates.path.archived
+    :mg_archived_path    => Setting.mailgates.path.archived,
+    :gap_space           => "\t" 
   })
 end
 

@@ -53,7 +53,7 @@ class ApplicationController < Sinatra::Base
     if true or !_result[0] or whether_show_log
       _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
       _status = _result[0]
-      _res    = _result[1..-1].map { |line| "\t\t" + line }.join if _result.length > 1 
+      _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
       puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
     end
     return _result

@@ -29,5 +29,5 @@ gem "settingslogic", "~>2.0.9"
 group :development do
   gem "net-ssh", "~>2.7.0"
   gem "net-scp", "~>1.2.1"
-  gem "rspec", "~>3.1.0"
+  #gem "rspec", "~>3.1.0"
 end

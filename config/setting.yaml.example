@@ -13,6 +13,7 @@ default: &default
     download: /public/pool/download
     emails: /public/pool/emails
     data: /public/pool/data
+    bad: /public/pool/bad
     archived: /public/pool/archived
     mailtest: /public/pool/mailtest
   mailgates: 
@@ -51,6 +52,7 @@ test:
     download: /public/pool/download
     emails: /public/pool/emails
     data: /public/pool/data
+    bad: /public/pool/bad
     archived: /public/pool/archived
     mailtest: /public/pool/mailtest
   mailgates: 
@@ -67,4 +69,4 @@ test:
     linux:
       md5: "md5sum"
   open:
-    token: "Focus$_01"
+    token: "hello"

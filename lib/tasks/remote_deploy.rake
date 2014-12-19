@@ -15,12 +15,14 @@ namespace :remote do
 
   desc "scp local config files to remote server."
   task :deploy => :environment do
-    remote_root_path = Settings.server.app_root_path
+    remote_root_path = Setting.remote.app_root_path
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    Net::SSH.start(Settings.server.host, Settings.server.user, :password => Settings.server.password) do |ssh|
+    Net::SSH.start(Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
       command = "cd %s && git reset --hard HEAD && git pull" % remote_root_path
+      execute!(ssh, command)
+      command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % remote_root_path
       execute!(ssh, command)
 
       # check whether remote server exist yaml file
@@ -32,12 +34,6 @@ namespace :remote do
         end
         puts "\n"
       end
-
-      database_name = "%s_%s" % [ENV["APP_NAME"], ENV["RACK_ENV"]]
-      remote_db_path = "%s/db/%s.db" % [remote_root_path, database_name]
-      local_db_path  = "%s/db/%s.db" % [ENV["APP_ROOT_PATH"], database_name]
-      File.delete(local_db_path) if File.exist?(local_db_path)
-      ssh.scp.download!(remote_db_path, local_db_path)
     end
   end
 end

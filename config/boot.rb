@@ -26,10 +26,8 @@ end
 
 status, *result = run_command("whoami")
 whoami = result[0].strip 
-if whoami == "root"
-  system("chown -R nobody:nobody #{app_root_path} && chmod -R 777 #{app_root_path}")
-else
-  warn "warning: [#{whoami}] can't execute chown/chmod"
+if whoami != "webmail"
+  warn "[warning] user [#{whoami}] start up web server."
 end
 
 # 扩充require路径数组
@@ -65,12 +63,12 @@ recursion_require("app/controllers", /_controller\.rb$/, app_root_path, [/^appli
 ENV["OS_PLATFORM"] = `test -f /etc/issue && cat /etc/issue | head -n 1 || uname -s`.to_s.strip
 ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 # make sure source files privilege
-`chown -R #{Setting.mailgates.user}:#{Setting.mailgates.group} #{app_root_path}`
-`chmod -R #{Setting.mailgates.mode} #{app_root_path}`
+#`chown -R #{Setting.mailgates.user}:#{Setting.mailgates.group} #{app_root_path}`
+#`chmod -R #{Setting.mailgates.mode} #{app_root_path}`
 
 # basc tmp direcotry
 `cd #{app_root_path} && mkdir -p ./{log,tmp/pids}`
-`cd #{app_root_path} && echo "#{app_root_path} > tmp/app_root_path`
+`cd #{app_root_path} && echo "#{app_root_path}" > tmp/app_root_path`
 
 # run this then startup successfully
 # record start log in log/startup.log

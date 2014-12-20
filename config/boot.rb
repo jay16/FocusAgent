@@ -27,12 +27,11 @@ end
 status, *result = run_command("whoami")
 whoami = result[0].strip 
 if whoami != "webmail"
-  warn "[warning] user [#{whoami}] start up web server."
+  warn "\n\t[warning] user [#{whoami}] start up web server.\n"
 end
 
 # 扩充require路径数组
 # require 文件时会在$:数组中查找是否存在
-puts app_root_path
 $:.unshift(app_root_path)
 $:.unshift("%s/config" % app_root_path)
 $:.unshift("%s/lib/tasks" % app_root_path) 
@@ -69,6 +68,8 @@ ENV["OS_HOSTNAME"] = `hostname`.to_s.strip
 # basc tmp direcotry
 `cd #{app_root_path} && mkdir -p ./{log,tmp/pids}`
 `cd #{app_root_path} && echo "#{app_root_path}" > tmp/app_root_path`
+pool_wait_path = File.join(app_root_path, Setting.pool.wait)
+`cd #{app_root_path} && echo "#{pool_wait_path}" > tmp/pool_wait_path`
 
 # run this then startup successfully
 # record start log in log/startup.log

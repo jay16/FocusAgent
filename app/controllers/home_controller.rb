@@ -59,10 +59,10 @@ class HomeController < ApplicationController
 
   private
     def campaigns_listener_action(params)
-      filename  =  params[:filename]   
-      md5       =  params[:md5] 
-      #sdate     =  params[:sdate]
-      mail_type =  params[:mail_type] || "none"
+      filename  = @params[:filename]   
+      md5       = @params[:md5] 
+      sdate     = @params[:sdate]
+      mail_type = @params[:mail_type] || "none"
 
       if filename && md5
         now       = Time.now
@@ -85,10 +85,10 @@ class HomeController < ApplicationController
     end
 
     def open_mailer_action(params)
-      email    = params[:email]
-      tar_name = params[:tar_name]
-      md5      = params[:md5]
-      strftime = params[:strftime]
+      email    = @params[:email]
+      tar_name = @params[:tar_name]
+      md5      = @params[:md5]
+      strftime = @params[:strftime]
 
       if email && tar_name && md5 && strftime
         now       = Time.now

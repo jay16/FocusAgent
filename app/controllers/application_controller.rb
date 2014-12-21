@@ -17,21 +17,13 @@ class ApplicationController < Sinatra::Base
   register Sinatra::Flash
 
   before do
+    @request_body = request_body
+    request_hash = JSON.parse(@request_body) rescue {}
+    @params = params.merge(request_hash)
+    @params = @params.merge({ip: remote_ip, browser: remote_browser})
+
     print_format_logger
   end
-
-  #load css/js/font file
-  #get "/js/:file" do
-  #  disposition_file("javascripts")
-  #end
-  #get "/css/:file" do
-  #  disposition_file("stylesheets")
-  #end
-
-  #def disposition_file(file_type)
-  #  file = File.join(ENV["APP_ROOT_PATH"],"app/assets/#{file_type}/#{params[:file]}")
-  #  send_file(file, :disposition => :inline) if File.exist?(file)
-  #end
 
   def remote_ip
     request.ip 
@@ -60,13 +52,10 @@ class ApplicationController < Sinatra::Base
   end 
 
   def print_format_logger
-    hash = params || {}
-    info = {ip: remote_ip, browser: remote_browser}
-    params = hash.merge(info)
-    request_info = request.body ? %Q{Request:\n #{request_body }} : ""
+    request_info = @request_body ? %Q{Request:\n #{@request_body }} : ""
     log_info = %Q{
 #{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}
-Parameters:\n #{params.to_s}
+Parameters:\n #{@params.to_s}
 #{request_info}
     }
     puts log_info
@@ -74,7 +63,7 @@ Parameters:\n #{params.to_s}
   end
 
   def request_body(body = request.body)
-    @request_body = case body
+    case body
     when StringIO then body.string
     when Tempfile then body.read
     # gem#passenger is ugly!

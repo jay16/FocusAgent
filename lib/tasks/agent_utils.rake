@@ -79,6 +79,9 @@ namespace :agent do
     end
     execute!("echo %s > %s/tmp/app_root_path" % [@options[:app_root_path], @options[:app_root_path]])
     execute!("echo %s > %s/tmp/pool_wait_path" % [@options[:pool_wait_path], @options[:app_root_path]])
+
+    command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % @options[:app_root_path]
+    execute!(command)
     puts execute!("tree %s" % base_on_root_path("public"))
   end
 

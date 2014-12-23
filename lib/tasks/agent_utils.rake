@@ -105,7 +105,7 @@ namespace :agent do
     ret = execute!(shell)
     md5_res = ret[1].split[0].chomp 
     if md5_res != md5_value 
-      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5, md5_res]
+      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5_value, md5_res]
       return false
     end
     action_logger("download", tar_file_name)
@@ -164,7 +164,7 @@ namespace :agent do
     ret = execute!(shell)
     md5_res = ret[1].split[0].chomp 
     if md5_res != md5_value
-      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5, md5_res]
+      puts_with_space "\t[failure] download tar file's md5 not match:\n$!$\texpected: %s\n$!$\tgot: %s" % [md5_value, md5_res]
       return false
     end
     action_logger("download", tar_file_name)

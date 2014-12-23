@@ -23,6 +23,11 @@
 
 ### TODO
 
+  1. crontab check watch_dog#process
+  2. start up command with chkonfig when reboot or boot 
+  3. mobile view
+  4. data#bad/ok; log#viewer
+
 
 ### COMMAND
 

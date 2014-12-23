@@ -38,8 +38,15 @@ case "$1" in
     restart|force-reload)  
         kill -USR2 `cat tmp/pids/unicorn.pid`  
         ;;  
+    rake)
+        echo "rake task list:\n"
+        echo "RACK_ENV=${ENVIRONMENT} bundle exec rake agent:clear"
+        echo "RACK_ENV=${ENVIRONMENT} bundle exec rake agent:deploy"
+        echo "RACK_ENV=${ENVIRONMENT} bundle exec rake agent:check"
+        echo "RACK_ENV=${ENVIRONMENT} bundle exec rake agent:main"
+        ;;
     *)  
-        echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2  
+        echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|rake}" >&2  
         exit 3  
         ;;  
 esac  

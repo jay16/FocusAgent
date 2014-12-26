@@ -3,25 +3,39 @@
 %html
   %head
     %title= Setting.website.title
+    %meta{name: "renderer", content:"webkit"}
+    %meta{"http-equiv" => "X-UA-Compatible", content: "IE=edge"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
     %meta{"http-equiv" => "content-type", content: "text/html", charset: "UTF-8"}
     %link{href: "#{Setting.website.favicon}", rel: "shortcut icon"}
     = javascript_include_tag "/javascripts/jquery.js"
     = javascript_include_tag "/javascripts/bootstrap.min.3.0.3.js"
     = stylesheet_link_tag "/stylesheets/bootstrap.min.3.0.3.css"
     = stylesheet_link_tag "/stylesheets/application.scss"
+    -if mobile? 
+      %meta{:content => "no", :name => "apple-mobile-web-app-capable"}
+      %meta{:content => "True", :name => "HandheldFriendly"}
+      %meta{:content => "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no", :name => "viewport"}/
+      :css
+        body { max-width: 1000px; min-width:300px; }
+
 
   %body{style: "background:#f0f0f0;"}
     %header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav{:role => "banner", :style => "text-shadow: 0 -1px 0 rgba(0,0,0,.15);background-color: #563d7c;border-color: #463265;box-shadow: 0 1px 0 rgba(255,255,255,.1); color: white;"}
-      .container
-        .navbar-header
-          %a.navbar-brand{:href => "javascript:void(0);", style: "color:white;"} FocusMail 代理
-        %nav.collapse.navbar-collapse.bs-navbar-collapse{:role => "navigation"}
-          %ul.nav.navbar-nav.navbar-right
-            %li
-
+      .container{style: "padding-left:0px;"}
+        %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
+          .navbar-header
+            %a.navbar-brand{:href => "javascript:void(0);", style: "color:white;"} FocusMail 代理
 
     .container{style: "margin-top:55px;"}
       .row
-        .col-sm-12
-          = yield
+        - if mobile?
+          .col-sm-12
+            = yield
+        - else
+          .col-sm-8.col-sm-offset-2
+            = yield
 
+    .container
+      .row{style: "text-align: center;"}
+        .footer &copy; #{Time.now.strftime("%Y")} mailhok.com 

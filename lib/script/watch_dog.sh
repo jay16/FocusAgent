@@ -4,7 +4,7 @@ ENVIRONMENT=$1
 APP_ROOT_PATH=$2
 POOL_WAIT_PATH=$3
 
-echo $$ > ${APP_ROOT_PATH}/tmp/pids/crontab.pid
+echo $$ > ${APP_ROOT_PATH}/tmp/pids/watch_dog.pid
 echo "app root path: ${APP_ROOT_PATH}"
 while true
 do

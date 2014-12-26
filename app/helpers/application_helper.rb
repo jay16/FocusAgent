@@ -16,20 +16,21 @@ module ApplicationHelper
   end 
 
   def ps_result(pid)
-    status, *result = run_command("ps aux | grep PID | grep -v 'grep'")
-    title = result.first.split
-    
-    ps = "ps aux | grep #{pid} | grep -v 'grep'"
-    status, *result = run_command(ps)
-    result.map do |line|
-      row = line.split
-      row.first(title.length-1)
-        .push(row.last(row.length-title.length+1).join(" "))
-    end.unshift(title)
+    # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
+    # 0    1   2    3    4   5   6  7    8       9    10
+    processes = %x{ps aux | grep #{pid} | grep -v 'grep'}.split(/\n/)
+    processes.map do |process|
+      user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
+      [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "=>")]
+    end.find { |p| p[1].strip == pid.to_s.strip }
   end
 
   def agent_process_info
-    ps_result(Process.pid)
+    title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
+    watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid"))
+    [title.unshift("type"),
+     ps_result(Process.pid).unshift("server"),
+     ps_result(watch_dog_pid).unshift("watch_dog")]
   end
 
   def raw(html)
@@ -46,7 +47,29 @@ module ApplicationHelper
       ["nodata", "nodata"]
     else
       lines = IO.readlines(pool_data_file)
-      [lines[-1].split(",")[0], lines.length]
+      [lines[-1].split(",")[0], lines.count]
     end
+  end
+  def pool_bad_info(type, timestamp = Time.now.strftime("%Y%m%d"))
+    pool_bad_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.bad, timestamp)
+    if not File.exist?(pool_bad_path)
+      ["nodata", "nodata"]
+    else
+      files = Dir.glob(pool_data_path + "/*.csv")
+      ["", files.count]
+    end
+  end
+
+  MOBILE_USER_AGENTS =  'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
+                        'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
+                        'x320|x240|j2me|sgh|portable|sprint|docomo|kddi|softbank|android|mmp|' +
+                        'pdxgw|netfront|xiino|vodafone|portalmmm|sagem|mot-|sie-|ipod|up\\.b|' +
+                        'webos|amoi|novarra|cdm|alcatel|pocket|iphone|mobileexplorer|mobile'
+  # check remote client whether is mobile
+  # define different layout
+  def mobile?
+    agent_str = request.env["HTTP_USER_AGENT"].to_s.downcase
+    return false if agent_str =~ /ipad/
+    agent_str =~ Regexp.new(MOBILE_USER_AGENTS)
   end
 end

@@ -34,3 +34,7 @@
         %td crontab
         - pool_data_info("crontab").each do |item|
           %td= item
+      %tr
+        %td bad
+        - pool_data_info("bad").each do |item|
+          %td= item

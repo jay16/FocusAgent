@@ -10,11 +10,11 @@ while true
 do
     if test -f ${APP_ROOT_PATH}/tmp/crontab.wait
     then
-        echo "$(date +%Y-%m-%d_%H:%M:%S): be forced to skip."
+        echo "$(date '+%Y-%m-%d %H:%M:%S'): be forced to skip."
     else
         if [[ $(ls ${POOL_WAIT_PATH} | wc -l) -eq 0 ]];
         then
-            echo "$(date +%Y-%m-%d_%H:%M:%S): idleness."
+            echo "$(date '+%Y-%m-%d %H:%M:%S'): idleness."
         else
             /bin/sh ${APP_ROOT_PATH}/lib/script/rake.sh ${APP_ROOT_PATH} ${ENVIRONMENT} 
         fi

@@ -1,49 +1,50 @@
 #!/bin/bash
 
-ENVIRONMENT=$(test -z "$2" && echo "production" || echo "$2")
-APP_ROOT_PATH=$(cat ./tmp/app_root_path)
-POOL_WAIT_PATH=$(cat ./tmp/pool_wait_path)
-
-echo "environment:    ${ENVIRONMENT}"
+environment=$(test -z "$2" && echo "production" || echo "$2")
+app_root_path=$(cat ./tmp/app_root_path)
+pool_wait_path=$(cat ./tmp/pool_wait_path)
+watchdog_pid_file=./tmp/pids/watch_dog.pid
 
 case "$1" in
     start)
+        # not generate pid file when first start
+        # cannot use `ps -p $(cat ${watchdog_pid_file})`
         if [[ $(ps -ef | grep "watch_dog.sh" | grep -v "grep" | wc -l) -eq 0 ]];
         then
-            nohup /bin/sh ${APP_ROOT_PATH}/lib/script/watch_dog.sh ${ENVIRONMENT} ${APP_ROOT_PATH} ${POOL_WAIT_PATH} >> log/crontab.log 2>&1 &
-            echo $! > ${APP_ROOT_PATH}/tmp/pids/nohup.pid
+            nohup /bin/sh ${app_root_path}/lib/script/watch_dog.sh ${environment} ${app_root_path} ${pool_wait_path} >> log/crontab.log 2>&1 &
+            echo $! > ${app_root_path}/tmp/pids/nohup.pid
             test -f nohup.out && rm nohup.out
         else
-            echo "WARNING: watch_dog.sh is already running."
+            echo -e "\twarning: watch_dog.sh is already running."
         fi
         ;;
     stop)
-         cd ${APP_ROOT_PATH} && test -f tmp/pids/nohup.pid && kill -9 $(cat tmp/pids/nohup.pid) 
-         cd ${APP_ROOT_PATH} && test -f tmp/pids/watch_dog.pid && kill -9 $(cat tmp/pids/watch_dog.pid)
-         cd ${APP_ROOT_PATH} && test -f tmp/pids/nohup.pid && rm tmp/pids/nohup.pid
-         cd ${APP_ROOT_PATH} && test -f tmp/pids/watch_dog.pid && rm tmp/pids/watch_dog.pid
-         cd ${APP_ROOT_PATH} && /bin/sh nohup.sh status
-        ;;
-    restart|force-reload)
-        cd ${APP_ROOT_PATH} && kill -USR2 $(cat tmp/pids/nohup.pid)
+        watchdog_pid=$(cat ${watchdog_pid_file})
+        ps -p ${watchdog_pid} > /dev/null
+        if [[ $? -eq 0 ]];
+        then
+            kill -kill ${watchdog_pid}
+        else
+            echo -e "\twatch_dog pid ${watchdog_pid} not exist."
+        fi
         ;;
     status)
         # ps result menu
-        ps -ef | grep "PID" | grep -v "grep"
+        ps -ef | grep "pid" | grep -v "grep"
         # ps result list
         ps -ef | grep "nohup.sh" | grep -v "grep"
         ps -ef | grep "watch_dog.sh" | grep -v "grep"
         ps -ef | grep "rake:agent:main" | grep -v "grep"
 
-        test -f ${APP_ROOT_PATH}/tmp/crontab.wait && echo "\twait" || echo "\tactive"
+        test -f ${app_root_path}/tmp/crontab.wait && echo -e "\twait" || echo -e "\tactive"
         ;;
     active)
-        cd ${APP_ROOT_PATH} && rm tmp/crontab.wait
+        cd ${app_root_path} && rm tmp/crontab.wait
         ;;
     wait)
-        cd ${APP_ROOT_PATH} && touch tmp/crontab.wait
+        cd ${app_root_path} && touch tmp/crontab.wait
         ;;
     *)
-        echo "Usage ./nohup.sh {start|stop|restart|status|active|wait}"
+        echo "usage ./nohup.sh {start|stop|status|active|wait}"
         ;;
 esac

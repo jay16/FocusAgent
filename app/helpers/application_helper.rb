@@ -21,16 +21,16 @@ module ApplicationHelper
     processes = %x{ps aux | grep #{pid} | grep -v 'grep'}.split(/\n/)
     processes.map do |process|
       user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
-      [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "=>")]
+      [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "~")]
     end.find { |p| p[1].strip == pid.to_s.strip }
   end
 
   def agent_process_info
     title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
     watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid"))
-    [title.unshift("type"),
-     ps_result(Process.pid).unshift("server"),
-     ps_result(watch_dog_pid).unshift("watch_dog")]
+    [title.unshift("Type"),
+     ps_result(Process.pid).unshift("WebApp"),
+     ps_result(watch_dog_pid).unshift("WatchDog")]
   end
 
   def raw(html)

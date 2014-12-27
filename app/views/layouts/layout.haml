@@ -29,12 +29,8 @@
 
     .container{style: "margin-top:55px;"}
       .row
-        - if mobile?
-          .col-sm-12
-            = yield
-        - else
-          .col-sm-8.col-sm-offset-2
-            = yield
+        %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
+          = yield
 
     .container
       .row{style: "text-align: center;"}

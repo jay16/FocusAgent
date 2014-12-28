@@ -4,6 +4,10 @@ class Cpanel::HomeController < Cpanel::ApplicationController
   set :layout, :"../layouts/layout"
 
   before do
+    unless login?
+      flash[:warnging] = "please login."
+      redirect "/"
+    end
   end
 
   get "/" do

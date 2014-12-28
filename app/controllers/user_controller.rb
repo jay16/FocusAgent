@@ -19,7 +19,7 @@ class UserController < ApplicationController
     else
       response.set_cookie "token", {:value=> "", :path => "/", :max_age => "2592000"}
 
-      flash[:warning] = "Token不正确" 
+      flash[:warning] = "Token不正确, %s" % Setting.open.token
       redirect "/user/login"
     end
   end

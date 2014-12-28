@@ -2,7 +2,7 @@
 desc "tasks around CoffeeScript"
 namespace :cs2js do
 
-  def lasttime(info, klass, &block)
+  def lasttime_for_compile(info, klass, &block)
      bint = Time.now.to_f
      yield
      eint = Time.now.to_f
@@ -16,7 +16,7 @@ namespace :cs2js do
      files = Dir.entries(source_path).select { |file| file =~ regexp }
 
      files.each do |file|
-       lasttime file, klass.name do
+       lasttime_for_compile file, klass.name do
          begin
            File.open(File.join(target_path, File.basename(file, sbasename) + tbasename), "w:utf-8") do |f|
              f.puts klass.compile(File.read(File.join(source_path,file)))

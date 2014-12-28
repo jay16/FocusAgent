@@ -1,0 +1,12 @@
+.row
+  .page-header
+    %h1 登陆
+  %form#loginForm.form-horizontal.bv-form{:action => "/user/login", :method => "post", :novalidate => "novalidate", :role => "form"}
+    %button.bv-hidden-submit{:style => "display: none; width: 0px; height: 0px;", :type => "submit"}
+    .form-group.has-feedback
+      %label.col-lg-2.control-label{:for => "user_token"} Token:
+      .col-lg-6
+        %input.form-control{:name => "token", :type => "text"}
+    .form-group
+      .col-lg-offset-2.col-lg-4
+        %input.btn.btn-default{:type => "submit", :value => "提交"}

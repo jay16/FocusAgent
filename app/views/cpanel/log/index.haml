@@ -1,0 +1,34 @@
+.row
+  %h1 发信日志
+
+.row
+  %table.table.table-bordered.table-striped
+    %thead
+      %tr
+        %th -
+        %th time
+        %th from
+        %th to
+        %th subject
+        %th result
+    %tbody
+      - @datas.each_with_index do |hash, index|
+        - if hash.has_key?(:raw)
+          %tr.warning
+            %td= index
+            %td{colspan: "5"}= hash[:raw]
+        - else
+          %tr
+            %td= index
+            %td= hash[:timestamp]
+            %td= hash[:from]
+            %td= hash[:to]
+            %td= hash[:subject]
+            - if hash[:result] == "OK"
+              %td= hash[:result]
+            - else
+              %td= hash[:result].split.first
+        - if hash.has_key?(:result) and hash[:result] != "OK"
+          %tr.danger
+            %td= index
+            %td{colspan: "5"}= hash[:result]

@@ -1,0 +1,29 @@
+%header.navbar.navbar-inverse.navbar-fixed-top.bs-docs-nav{:role => "banner", :style => "text-shadow: 0 -1px 0 rgba(0,0,0,.15);background-color: #563d7c;border-color: #463265;box-shadow: 0 1px 0 rgba(255,255,255,.1); color: white;"}
+  .container{style: "padding-left:0px;"}
+    %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
+      .navbar-header
+        %a.navbar-brand{:href => "javascript:void(0);", style: "color:white;"} FocusMail 代理
+
+      / Collect the nav links, forms, and other content for toggling
+      .collapse.navbar-collapse{role: "navigation", id:"bs-example-navbar-collapse-1"}
+        %ul.nav.navbar-nav
+          %li.active= link_to "概况", "/cpanel"
+          %li= link_to "今日数据", "/cpanel/data"
+          %li= link_to "发信日志", "/cpanel/log"
+        %input#navbar_right_lis{type: "hidden", value: 1}/
+        %ul.nav.navbar-nav.navbar-right
+          %li.dropdown
+            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              %i.glyphicon.glyphicon-cog
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                %a{:href => "/"}
+                  %i.glyphicon.glyphicon-wrench
+                  返回前台 
+              %li.divider
+              %li
+                %a{:href => "/user/logout"}
+                  %i.glyphicon.glyphicon-log-out
+                  退出
+

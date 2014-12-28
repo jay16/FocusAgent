@@ -1,5 +1,6 @@
 #encoding: utf-8
 require "json"
+require 'digest/md5'
 require "sinatra/multi_route"
 class ApplicationController < Sinatra::Base
   # css/js/view配置文档
@@ -88,6 +89,14 @@ Parameters:\n #{@params.to_s}
     content_type "application/json"
     body   hash.to_json
     status code || 200
+  end
+
+  def md5_key(str)
+    Digest::MD5.hexdigest(str)
+  end
+
+  def login?
+    request.cookies["token"] == md5_key(Setting.open.token)
   end
 
   #alias_method :respond_to_api, :respond_with_json

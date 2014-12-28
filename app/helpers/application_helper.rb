@@ -1,9 +1,19 @@
 require "cgi"
 module ApplicationHelper
 
-  def notice_message
+  def flash_message
+    return if !defined?(flash)
+    return if flash.empty?
+    # hash key must be symbol
+    hash = flash.inject({}) { |h, (k, v)| h[k.to_s] = v; h; }
+    # bootstrap#v3 [alert] javascript plugin
+    flash.keys.map(&:to_s).grep(/warning|danger|success/).map do |key|
+      #close = link_to("&times;", "#", class: "close", "data-dismiss" => "alert")
+      #tag(:div, {content: "#{close}#{hash[key]}", class: "alert alert-#{key}", role: "alert" }) 
+     tag(:div, hash[key], { :class => "alert alert-#{key}" })
+    end.join
+
      #close = link_to("x", "#", { :class => "close", "data-dismiss" => "alert" })
-     tag(:div, flash[:notice], { :class => "alert alert-success" }) if flash[:notice]
   end
 
   # execute linux shell command

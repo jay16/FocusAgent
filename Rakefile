@@ -12,6 +12,15 @@ task :environment => "Gemfile.lock" do
   eval "Rack::Builder.new {( " + File.read(File.expand_path('../config.ru', __FILE__)) + "\n )}"
 end
 
+task :crond do
+  @options = {}
+  ENV["APP_ROOT_PATH"] = @options[:app_root_path] = Dir.pwd
+  @options[:tmp_path] = File.join(Dir.pwd, "tmp")
+  require "%s/lib/utils/crontab.rb" % @options[:app_root_path]
+  @crontab = Crontab.new(File.join(Dir.pwd, "tmp"), false) 
+  @job = "* * * * * cd %s && /bin/sh crontab.sh >> log/crontab.log" % Dir.pwd
+end
+
 task :simple do
   require "settingslogic"
   @options ||= {}

@@ -1,5 +1,5 @@
 .row
-  %h1 概况
+  %h1 系统信息
 
 .row
   %table.table.table-bordered.table-striped
@@ -23,7 +23,7 @@
         %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
       %tr
         %td root
-        %td= ENV["APP_ROOT_PATH"]
+        %td= ENV["APP_ROOT_PATH"] + " == !~"
 
   - process_info_datas = agent_process_info
   - usefull = [0,1,3,4,8,9]
@@ -48,3 +48,7 @@
           %tr
             %td= row[0]
             %td{colspan: "5"}=row[1]
+      - crontab_jobs_list.each do |job|
+        %tr
+          %td crontab
+          %td{colspan: "5"}= job

@@ -1,0 +1,15 @@
+.row
+  脚本管理
+.row
+  %table.table.table-condensed
+    - @jobs.each do |hash|
+      %tr
+        - if hash.has_key?(:comment)
+          %td{colspan:"6"}= hash[:comment]
+        - else
+          %td= hash[:minute]
+          %td= hash[:hour]
+          %td= hash[:day]
+          %td= hash[:week]
+          %td= hash[:month]
+          %td= hash[:command]

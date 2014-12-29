@@ -15,7 +15,7 @@
     = stylesheet_link_tag "/stylesheets/nprogress.css"
     = stylesheet_link_tag "/stylesheets/bootstrap.320.min.css"
     = stylesheet_link_tag "/stylesheets/application.scss"
-    -if mobile? 
+    -if is_mobile = mobile? 
       %meta{:content => "no", :name => "apple-mobile-web-app-capable"}
       %meta{:content => "True", :name => "HandheldFriendly"}
       %meta{:content => "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no", :name => "viewport"}/
@@ -26,11 +26,11 @@
     = haml :"../layouts/_header"
     .container
       .row
-        .col-sm-12{style: "text-align:center;"}
+        %div{class: "#{is_mobile ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;text-align:center;"}
           .loading.hidden 加载中...
           = flash_message
       .row{style: "margin-left:0px;"}
-        %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
+        %div{class: "#{is_mobile ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
           = yield
 
     .container

@@ -19,15 +19,15 @@ module ApplicationHelper
   # execute linux shell command
   # return array with command result
   # [execute status, execute result] 
-  def run_command(shell, whether_show_log=true)
-    _result = IO.popen(shell) do |stdout| 
+  def execute!(command, whether_show_log=true)
+    _result = IO.popen(command) do |stdout| 
       stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
-    if true or !_result[0] or whether_show_log
-      _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+    if !_result[0] or whether_show_log
+      _command  = command.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
       _status = _result[0]
       _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
-      puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
+      puts "%s\n\t\t==> %s\n%s\n" % [_command, _status, _res]
     end
     return _result
   end 
@@ -35,8 +35,8 @@ module ApplicationHelper
   def ps_result(pid)
     # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
     # 0    1   2    3    4   5   6  7    8       9    10
-    script = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
-    status, *result = run_command(script)
+    command = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
+    status, *result = execute!(command)
 
     if result.size > 0
       result.map do |process|
@@ -52,8 +52,21 @@ module ApplicationHelper
     title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
     watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid")).strip
     [title.unshift("Type"),
-     ps_result(Process.pid).unshift("WebApp"),
-     ps_result(watch_dog_pid).unshift("WatchDog")]
+     ps_result(Process.pid).unshift("unicorn"),
+     ps_result(watch_dog_pid).unshift("nohup")]
+  end
+
+  def crontab_jobs_list
+    command = "cd %s && bundle exec rake crontab:list" % ENV["APP_ROOT_PATH"]
+    status, *jobs = execute!(command)
+    if jobs.empty? 
+      _status, whoami = execute!("whoami")
+      jobs = ["crontab: no jobs for %s" % whoami]
+    else
+      jobs.map! do |job|
+        job.gsub(ENV["APP_ROOT_PATH"], "!~")
+      end
+    end
   end
 
   def raw(html)

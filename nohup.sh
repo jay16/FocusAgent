@@ -11,7 +11,7 @@ case "$1" in
         # cannot use `ps -p $(cat ${watchdog_pid_file})`
         if [[ $(ps -ef | grep "watch_dog.sh" | grep -v "grep" | wc -l) -eq 0 ]];
         then
-            nohup /bin/sh ${app_root_path}/lib/script/watch_dog.sh ${environment} ${app_root_path} ${pool_wait_path} >> log/crontab.log 2>&1 &
+            nohup /bin/sh ${app_root_path}/lib/script/watch_dog.sh ${environment} ${app_root_path} ${pool_wait_path} >> log/nohup.log 2>&1 &
             echo $! > ${app_root_path}/tmp/pids/nohup.pid
             test -f nohup.out && rm nohup.out
         else

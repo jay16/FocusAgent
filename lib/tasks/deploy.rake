@@ -57,6 +57,9 @@ namespace :remote do
         puts "\n"
       end
 
+      command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
+      execute!(ssh, command)
+
       command = "cd %s && /bin/sh crontab.sh" % remote_root_path
       execute!(ssh, command)
     end

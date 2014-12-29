@@ -1,7 +1,9 @@
 .row
   .col-sm-4
     %h1 发信日志
-  .col-sm-4.col-sm-offset-4.checkbox{style: "margin-top:40px;"}
+  .col-sm-4{style: "margin-top:43px;"}
+    %div.hidden.check-info.small{style:"text-align: right;color: gray;"} 10受影响
+  .col-sm-4.checkbox{style: "margin-top:40px;"}
     %label.right.lable.lable-success
       %input{:value => 1, :type => "checkbox", :onchange => "LogData.showNormal(this);", class: "right", :checked => "checked"} Normal
     %label.right.lable.lable-warning

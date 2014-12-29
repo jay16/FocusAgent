@@ -3,11 +3,12 @@
     _operation: function(input, klass) {
       if (App.checkboxState(input)) {
         App.checkboxUnChecked(input);
-        return $(klass).removeClass("hidden");
+        $(klass).removeClass("hidden");
       } else {
         App.checkboxChecked(input);
-        return $(klass).addClass("hidden");
+        $(klass).addClass("hidden");
       }
+      return $(".check-info").removeClass("hidden").html($(klass).length + "行数据受影响.");
     },
     showRaw: function(input) {
       return LogData._operation(input, ".log-datas .raw");

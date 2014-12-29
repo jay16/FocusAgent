@@ -7,6 +7,7 @@ window.LogData =
     else
       App.checkboxChecked(input)
       $(klass).addClass("hidden")
+    $(".check-info").removeClass("hidden").html($(klass).length+"行数据受影响.")
 
   showRaw: (input) ->
     LogData._operation(input, ".log-datas .raw")

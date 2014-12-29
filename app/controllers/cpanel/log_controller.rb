@@ -31,6 +31,10 @@ class Cpanel::LogController < Cpanel::ApplicationController
 
         if is_raw.zero?
           from = from.scan(/.*?_(\d+)_0@(.*)/)[0].join("/") rescue from unless from.empty?
+          if subject.length > 100
+            result  = result + "<br>subject: %s" + subject
+            subject = subject[0..30] 
+          end
           {timestamp: timestamp.split.last,
            emailfile: emailfile,
                 from: from,

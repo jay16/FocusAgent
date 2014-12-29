@@ -9,8 +9,8 @@
     %meta{"http-equiv" => "content-type", content: "text/html", charset: "UTF-8"}
     %link{href: "#{Setting.website.favicon}", rel: "shortcut icon"}
     = javascript_include_tag "/javascripts/jquery.js"
-    = javascript_include_tag "/javascripts/bootstrap.min.3.0.3.js"
-    = stylesheet_link_tag "/stylesheets/bootstrap.min.3.0.3.css"
+    = javascript_include_tag "/javascripts/bootstrap.320.min.js"
+    = stylesheet_link_tag "/stylesheets/bootstrap.320.min.css"
     = stylesheet_link_tag "/stylesheets/application.scss"
     -if mobile? 
       %meta{:content => "no", :name => "apple-mobile-web-app-capable"}
@@ -21,12 +21,12 @@
 
   %body{style: "background:#f0f0f0;"}
     = haml :"../layouts/_header"
-    .container{style: "margin-top:55px;"}
+    .container
       .row
         .col-sm-12{style: "text-align:center;"}
           .loading.hidden 加载中...
           = flash_message
-      .row
+      .row{style: "margin-left:0px;"}
         %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
           = yield
 

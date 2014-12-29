@@ -19,25 +19,38 @@ module ApplicationHelper
   # execute linux shell command
   # return array with command result
   # [execute status, execute result] 
-  def run_command(cmd)
-    IO.popen(cmd) do |stdout|
-      stdout.reject(&:empty?)
+  def run_command(shell, whether_show_log=true)
+    _result = IO.popen(shell) do |stdout| 
+      stdout.reject(&:empty?) 
     end.unshift($?.exitstatus.zero?)
+    if true or !_result[0] or whether_show_log
+      _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+      _status = _result[0]
+      _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
+      puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
+    end
+    return _result
   end 
 
   def ps_result(pid)
     # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
     # 0    1   2    3    4   5   6  7    8       9    10
-    processes = %x{ps aux | grep #{pid} | grep -v 'grep'}.split(/\n/)
-    processes.map do |process|
-      user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
-      [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "~")]
-    end.find { |p| p[1].strip == pid.to_s.strip }
+    script = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
+    status, *result = run_command(script)
+
+    if result.size > 0
+      result.map do |process|
+        user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
+        [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "!~")]
+      end.find { |p| p[1].strip == pid.to_s.strip }
+    else
+      ["bash: no output"]
+    end
   end
 
   def agent_process_info
     title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
-    watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid"))
+    watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid")).strip
     [title.unshift("Type"),
      ps_result(Process.pid).unshift("WebApp"),
      ps_result(watch_dog_pid).unshift("WatchDog")]

@@ -24,12 +24,12 @@
 
   %body{style: "background:#f0f0f0;"}
     = haml :"../layouts/_header"
-    .container{style: "margin-top:55px;"}
+    .container
       .row
         .col-sm-12{style: "text-align:center;"}
           .loading.hidden 加载中...
           = flash_message
-      .row
+      .row{style: "margin-left:0px;"}
         %div{class: "#{mobile? ? 'col-sm-12' : 'col-sm-8 col-sm-offset-2'}", style: "padding-left:0px;"}
           = yield
 

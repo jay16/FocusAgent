@@ -1,5 +1,13 @@
 .row
-  %h1 发信日志
+  .col-sm-4
+    %h1 发信日志
+  .col-sm-4.col-sm-offset-4.checkbox{style: "margin-top:40px;"}
+    %label.right.lable.lable-success
+      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showNormal(this);", class: "right", :checked => "checked"} Normal
+    %label.right.lable.lable-warning
+      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showRaw(this);", class: "right"} Raw
+    %label.right.lable.lable-danger
+      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showReason(this);", class: "right"} Reason
 
 .row
   %table.table.table-bordered.table-striped
@@ -11,14 +19,14 @@
         %th to
         %th subject
         %th result
-    %tbody
+    %tbody.log-datas
       - @datas.each_with_index do |hash, index|
         - if hash.has_key?(:raw)
-          %tr.warning
+          %tr.warning.raw.hidden
             %td= index
             %td{colspan: "5"}= hash[:raw]
         - else
-          %tr
+          %tr.normal
             %td= index
             %td= hash[:timestamp]
             %td= hash[:from]
@@ -29,6 +37,8 @@
             - else
               %td= hash[:result].split.first
         - if hash.has_key?(:result) and hash[:result] != "OK"
-          %tr.danger
+          %tr.danger.reason.hidden
             %td= index
             %td{colspan: "5"}= hash[:result]
+
+= javascript_include_tag "/javascripts/log_data.js"

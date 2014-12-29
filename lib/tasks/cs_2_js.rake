@@ -2,7 +2,7 @@
 desc "tasks around CoffeeScript"
 namespace :cs2js do
 
-  def lasttime_for_compile(info, klass, &block)
+  def lasttime_for_compile(file, klass, &block)
      bint = Time.now.to_f
      yield
      eint = Time.now.to_f

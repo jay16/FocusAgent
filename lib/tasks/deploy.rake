@@ -9,7 +9,7 @@ namespace :remote do
 
   def execute!(ssh, command)
     ssh.exec!(command) do  |ch, stream, data|
-      puts "%s:\n%s" % [stream, encode(data)]
+      puts "%s: %s" % [stream, encode(data)]
     end
   end
 
@@ -41,11 +41,11 @@ namespace :remote do
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    Net::SSH.start(Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
-      #command = "cd %s && git reset --hard HEAD && git pull" % remote_root_path
-      #execute!(ssh, command)
-      command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % remote_root_path
+    Net::SSH.start("mg02."+Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
+      command = "cd %s && git reset --hard HEAD && git pull origin master" % remote_root_path
       execute!(ssh, command)
+      #command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % remote_root_path
+      #execute!(ssh, command)
 
       # check whether remote server exist yaml file
       yamls.each do |yaml|
@@ -56,6 +56,9 @@ namespace :remote do
         end
         puts "\n"
       end
+
+      command = "cd %s && /bin/sh crontab.sh" % remote_root_path
+      execute!(ssh, command)
     end
   end
 end

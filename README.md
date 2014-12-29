@@ -1,5 +1,26 @@
 ## [FocusMailAgent]
 
+### COMMAND
+
+```
+    # web server
+    bundle install
+    sh unicorn.sh {start|stop|restart}
+
+    # crontab
+    sh crontab.sh
+
+    # test with RSpec
+    bundle exec rspec spec/controller/
+
+    # assets generator
+    bundle exec rake cs2js:complie
+
+    # rake tasks
+    bundle exec rake agent:deploy
+    bundle exec rake agent:clear
+    bundle exec rake agent:main
+```
 
 ### ROUTE
 
@@ -27,29 +48,8 @@
   2. start up command with chkonfig when reboot or boot 
   3. mobile view
   4. data#bad/ok; log#viewer
+  5. crontab check-dog
 
-
-### COMMAND
-
-```
-    # web server
-    bundle install
-    sh lib/script/unicorn.sh {start|stop|restart}
-
-    # crontab
-    sh lib/script/crontab.sh
-
-    # test with RSpec
-    bundle exec rspec spec/controller/
-
-    # assets generator
-    bundle exec rake cs2js:complie
-
-    # rake tasks
-    bundle exec rake agent:deploy
-    bundle exec rake agent:clear
-    bundle exec rake agent:main
-```
 
 ### NGINX CONFIGURE
 

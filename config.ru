@@ -5,7 +5,7 @@ map("/user")        { run UserController }
 map("/cpanel")      { run Cpanel::HomeController }
 map("/cpanel/data") { run Cpanel::DataController }
 map("/cpanel/log")  { run Cpanel::LogController }
-#map("/cpanel/script") { run Cpanel::ScriptController }
+map("/cpanel/script") { run Cpanel::ScriptController }
 map("/cpanel/open") { run Cpanel::OpenController }
 
 

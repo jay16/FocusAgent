@@ -5,7 +5,7 @@
   %table.table.table-bordered.table-striped
     %thead
       %tr
-        %td{style: "width:15%;"} 参数
+        %td{style: "max-width:20%;"} 参数
         %td 信息
     %tbody
       %tr
@@ -24,31 +24,22 @@
       %tr
         %td root
         %td= ENV["APP_ROOT_PATH"] + " == !~"
-
-  - process_info_datas = agent_process_info
-  - usefull = [0,1,3,4,8,9]
-  %table.table.table-hover.table-bordered
-    %thead
       %tr
-        - process_info_datas.shift.each_with_index do |item, index|
-          - next unless usefull.include?(index)
-          %td= item
-        
-    %tbody
-      - process_info_datas.each do |row|
-        - if row.size > 2
-          %tr
-            - row.each_with_index do |item, index|
-              - next unless usefull.include?(index)
-              %td= item 
-          %tr
-            %td
-            %td{colspan: "5"}=row.last
-        - else
-          %tr
-            %td= row[0]
-            %td{colspan: "5"}=row[1]
-      - crontab_jobs_list.each do |job|
-        %tr
-          %td crontab
-          %td{colspan: "5"}= job
+        %td size
+        %td= @app_size
+      %tr
+        %td whoami
+        %td= @whoami
+      %tr
+        %td environment
+        %td= ENV["RACK_ENV"]
+      %tr
+        %td language 
+        %td= link_to "Ruby #{RUBY_VERSION} -p#{RUBY_PATCHLEVEL if defined? RUBY_PATCHLEVEL }", "https://github.com/ruby/ruby", target: "blank"
+      %tr
+        %td webapp
+        %td= link_to "Sinatra ~> #{Sinatra::VERSION}", "https://github.com/bmizerany/sinatra", target: "blank"
+      %tr
+        %td httpserver
+        %td= link_to "Unicorn ~> #{Unicorn::Const::UNICORN_VERSION}", "https://github.com/defunkt/unicorn", target: "blank"
+

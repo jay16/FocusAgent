@@ -15,8 +15,8 @@
         .collapse.navbar-collapse{role: "navigation", id:"bs-example-navbar-collapse-1"}
           %ul.nav.navbar-nav
             %li.active= link_to "系统信息", "/cpanel"
-            %li.hidden= link_to "今日数据", "/cpanel/data"
             %li= link_to "发信日志", "/cpanel/log"
+            %li= link_to "代码状态", "/cpanel/script"
           %input#navbar_right_lis{type: "hidden", value: 1}/
           %ul.nav.navbar-nav.navbar-right
             %li.dropdown

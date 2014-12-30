@@ -1,15 +1,31 @@
+.row 
+  %h1 代码状态
+
 .row
-  脚本管理
-.row
-  %table.table.table-condensed
-    - @jobs.each do |hash|
+  - process_info_datas = agent_process_info
+  - usefull = [0,1,3,4,8,9]
+  %table.table.table-hover.table-bordered
+    %thead
       %tr
-        - if hash.has_key?(:comment)
-          %td{colspan:"6"}= hash[:comment]
+        - process_info_datas.shift.each_with_index do |item, index|
+          - next unless usefull.include?(index)
+          %td= item
+        
+    %tbody
+      - process_info_datas.each do |row|
+        - if row.size > 2
+          %tr
+            - row.each_with_index do |item, index|
+              - next unless usefull.include?(index)
+              %td= item 
+          %tr
+            %td
+            %td{colspan: "5"}=row.last
         - else
-          %td= hash[:minute]
-          %td= hash[:hour]
-          %td= hash[:day]
-          %td= hash[:week]
-          %td= hash[:month]
-          %td= hash[:command]
+          %tr
+            %td= row[0]
+            %td{colspan: "5"}=row[1]
+      - crontab_jobs_list.each do |job|
+        %tr
+          %td crontab
+          %td{colspan: "5"}= job

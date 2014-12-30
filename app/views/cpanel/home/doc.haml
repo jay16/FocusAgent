@@ -1,5 +1,11 @@
-.row
-  %h1 文档说明
+= haml :_doc
 
-.row
-  TODO
+%p ps: 
+%ol
+  %li document.md in app_root_path/config
+  %li 
+    convert .md to .haml with 
+    = link_to "markdown2html", "http://www.ctrlshift.net/project/markdowneditor", target: "blank"
+    |
+    =link_to "htmltohaml", "http://htmltohaml.com", target: "blank"
+    , then paste haml code into app/view/cpanel/home/_doc.haml

@@ -3,8 +3,7 @@ default: &default
     title: FocusMail代理
     favicon: ./images/favicon.gif
   server:
-    ip: mailhok.com
-    ip2: 10.160.22.79
+    ip: server_ip
     path:
       download: /openapi
       mailtest: /mailtem/mailtest
@@ -30,7 +29,12 @@ default: &default
     linux:
       md5: "md5sum"
   open:
-    token: "hello"
+    token: "guessit"
+  remote:
+    host: "remote-host.com"
+    user: "remote-user"
+    password: "remote-pwd"
+    app_root_path: /app_root_path
 
 production:
   <<: *default
@@ -43,7 +47,7 @@ test:
     title: FocusMail代理
     favicon: ./images/favicon.gif
   server:
-    ip: localhost:3000 
+    ip: localhost:3456
     path:
       download: /openapi
       mailtest: /mailtem/mailtest
@@ -69,4 +73,4 @@ test:
     linux:
       md5: "md5sum"
   open:
-    token: "hello"
+    token: "helloworld"

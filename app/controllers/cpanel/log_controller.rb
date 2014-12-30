@@ -19,13 +19,15 @@ class Cpanel::LogController < Cpanel::ApplicationController
 
         if match[0] and match[0].size == 8
           timestamp, emailfile, from_to, subject, result, mgham, mgtaglog, charset = match[0]
-          from, to = from_to.split(/->/).map { |str| str.gsub(/<|>/, "").strip }
+          from, to = from_to.split(/->/).map { |str| str.gsub(/<|>/, "").strip } rescue ["", ""]
 
           from = from.scan(/.*?_(\d+)_0@(.*)/)[0].join("/") rescue from if from
           to   = to.scan(/.*?_(\d+)_0@(.*)/)[0].join("/") rescue to if to
-          if subject.length > 100
-            result  = result + "<br>subject: %s" + subject
-            subject = subject[0..20] 
+          if subject.start_with?("Returned Mail:")
+            result  = result + "<br>subject: " + subject
+            _regexp = /(Returned\sMail\:\s\w+)/
+            _match = subject.scan(_regexp)
+            subject = _match ? _match[0][0] : subject[0..20]
           end
           {timestamp: timestamp.split.last, emailfile: emailfile, from: from, to: to,
            subject: subject, result: result, mgham: mgham, mgtaglog: mgtaglog, charset: charset}

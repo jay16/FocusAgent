@@ -1,8 +1,10 @@
 #encoding: utf-8
 class Cpanel::OpenController < Cpanel::ApplicationController
 
-  # params:
-  #     timestamp - 20141212
+	# download trigger/download/move data
+	# params:
+	#     token: necessary
+	#     timestamp: optional,yyyymmdd, default today
   get "/data" do
     if (params[:token] || "token") != Setting.open.token
       hash = { code: 401, info: "token is not correct!" }
@@ -27,8 +29,10 @@ class Cpanel::OpenController < Cpanel::ApplicationController
     end
   end
 
-  # params:
-  #     filename: log file name 
+	# download mailgates log file
+	# params:
+	#     token: necessary
+	#     filename: optional,default "mgmailerd.log"
   get "/log" do
     if (params[:token] || "token") != Setting.open.token
       hash = { code: 401, info: "token is not correct!" }
@@ -45,8 +49,10 @@ class Cpanel::OpenController < Cpanel::ApplicationController
     end
   end
 
-  # params
-  #     timestamp: 20141212
+	# download mailgates archived log file
+	# params:
+	#     token: necessary
+	#     timestamp: optional,yyyymmdd, default today(response: file not exist)
   # /mailgates/log_archive/2014_11/mgmailerd.log.141112.gz 
   get "/archived" do
     if (params[:token] || "token") != Setting.open.token
@@ -67,33 +73,42 @@ class Cpanel::OpenController < Cpanel::ApplicationController
     end
   end
 
-  def ps_result(pid)
-    # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
-    # 0    1   2    3    4   5   6  7    8       9    10
-    script = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
-    status, *result = run_command(script)
 
-    if result.size > 0
-      result.map do |process|
-        user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
-        [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "!~")]
-      end.find { |p| p[1].strip == pid.to_s.strip }
+  # get webapp/nohup/crontab run state
+	# params:
+	#     token: necessary
+  get "/process" do
+    if (params[:token] || "token") != Setting.open.token
+      hash = { code: 401, info: "token is not correct!" }
+      respond_with_json hash, 401
     else
-      ["bash: no output"]
+      hash = { code: 1, info: agent_process_info }
+      respond_with_json hash, 200
     end
   end
 
-  def agent_process_info
-    title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
-    watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid")).strip
-    [title.unshift("Type"),
-     ps_result(Process.pid).unshift("WebApp"),
-     ps_result(watch_dog_pid).unshift("WatchDog")]
+  private
+    def ps_result(pid)
+      # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
+      # 0    1   2    3    4   5   6  7    8       9    10
+      script = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
+      status, *result = run_command(script)
 
-  end
+      if result.size > 0
+        result.map do |process|
+          user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
+          [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "!~")]
+        end.find { |p| p[1].strip == pid.to_s.strip }
+      else
+        ["bash: no output"]
+      end
+    end
 
-  get "/bash" do
-    hash = { code: 1, info: agent_process_info }
-    respond_with_json hash, 200
-  end
+    def agent_process_info
+      title = %x{ps aux | grep PID | grep -v 'grep'}.split(/\n/).first.split
+      watch_dog_pid = IO.read(File.join(ENV["APP_ROOT_PATH"], "tmp/pids/watch_dog.pid")).strip
+      [title.unshift("Type"),
+       ps_result(Process.pid).unshift("unicorn"),
+       ps_result(watch_dog_pid).unshift("nohup")]
+    end
 end

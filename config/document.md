@@ -58,7 +58,7 @@ agent server with deploy(monitor/logger/rake)/api command explain.
 	cd app_root_path
 	/bin/sh nohup.sh {start|stop|status}
 	
-	# ps: rake task called by nohup.sh
+	# ps: rake task called by nohup.sh **every 5 seconds**
 	````
 	
 ### unicorn
@@ -79,14 +79,14 @@ agent server with deploy(monitor/logger/rake)/api command explain.
 
 	````
 	# crontab operation list
-	# crontab @job command write in Rakefile
+	# crontab @jobs command write in Rakefile
 	bundle exec rake crontab:list     # list all crontab jobs
-	bundle exec rake crontab:add      # add @job with check exist
-	bundle exec rake crontab:remove   # remove @job
+	bundle exec rake crontab:add      # add @jobs with check exist
+	bundle exec rake crontab:remove   # remove @jobs
 	bundle exec rake crontab:exist    # check whether @job exist
-	bundle exec rake crontab:job      # print @job command
+	bundle exec rake crontab:jobs      # print @jobs command
 	
-	# don't loose with crontab @job workly
+	# don't loose with crontab @jobs workly
 	# bundle/rake/unicorn command may run normally with hand
 	# but not ok with bash script called by crontab
 	
@@ -96,11 +96,11 @@ agent server with deploy(monitor/logger/rake)/api command explain.
 	/bin/sh unicorn.sh stop
 	tail -f log/*
 	
-	# it's ok when crontab @job startup unicorn and nohup successfully.
+	# it's ok when crontab @jobs startup unicorn and nohup successfully.
 	# best for browser operate.
 	
-	# ps: crontab @job execute unicorn.sh {stop|start}
-	```
+	# ps: crontab @jobs execute unicorn.sh {stop|start} when unicorn and nohup not all ok **every minute**.
+	````
 
 ### 1->2->3
 
@@ -156,6 +156,7 @@ agent server with deploy(monitor/logger/rake)/api command explain.
 	#     token: necessary
 	GET /cpanel/open/process
 	````
+	
 
 generated at 2014/12/30 by jay
-	
+

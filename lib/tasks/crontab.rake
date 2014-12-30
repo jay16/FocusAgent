@@ -8,24 +8,33 @@ namespace :crontab do
   end
 
   task :exist => :crond do
-    puts @crontab.whether_job_exist?(@job)
+    @jobs.each do |job|
+      status = @crontab.whether_job_exist?(job) ? "exist" : "not exist"
+      puts "job command: %s\ncrontab status: %s\n" % [job, status]
+    end
   end
 
   task :add => :crond do
-    if @crontab.whether_job_exist?(@job)
-      puts "job alread exist!"
-    else
-      @crontab.add(@job)
+    @jobs.each do |job|
+      if @crontab.whether_job_exist?(job)
+        puts "job command: %s\ncrontab status: exit\n" % job
+      else
+        @crontab.add(job)
+      end
     end
+    puts "\ncrontab jobs list:\n"
     puts @crontab.list
   end
 
   task :remove => :crond do
-    @crontab.remove(@job)
+    @jobs.each do |job|
+      @crontab.remove(job)
+    end
+    puts "\ncrontab jobs list:\n"
     puts @crontab.list
   end
 
-  task :job => :crond do
-    puts @job
+  task :jobs => :crond do
+    puts @jobs
   end
 end

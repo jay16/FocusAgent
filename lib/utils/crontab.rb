@@ -55,10 +55,10 @@ class Crontab
 
     status, *result = reload_crontab_with_new_conf
     if status
-      puts "\tadd job successfully."
+      puts "add job successfully."
       jobs = IO.readlines(@crontab_new_conf)
     else
-      puts "\tadd job fail. and restore jobs."
+      puts "add job fail. and restore jobs."
       reload_crontab_with_org_conf
       jobs = list
     end
@@ -72,10 +72,10 @@ class Crontab
     
     status, *result = reload_crontab_with_new_conf
     if status
-      puts "\tremove job successfully."
+      puts "remove job successfully."
       jobs = IO.readlines(@crontab_new_conf)
     else
-      puts "\tremove job fail. and restore jobs."
+      puts "remove job fail. and restore jobs."
       reload_crontab_with_org_conf
       jobs = list
     end

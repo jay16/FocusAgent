@@ -41,7 +41,7 @@ namespace :remote do
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    agent = "mg02."
+    agent = "mg01."
     Net::SSH.start(agent+Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
       command = "cd %s && git reset --hard HEAD && git pull origin master" % remote_root_path
       execute!(ssh, command)

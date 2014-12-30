@@ -44,11 +44,8 @@
 
 ### TODO
 
-  1. crontab check watch_dog#process
-  2. start up command with chkonfig when reboot or boot 
-  3. mobile view
-  4. data#bad/ok; log#viewer
-  5. crontab check-dog
+  1. start up command with chkonfig when reboot or boot 
+  2. bundler/unicorn/rake executed in bash call by crontab will abort "Command NotFound"
 
 
 ### NGINX CONFIGURE

@@ -156,7 +156,34 @@ agent server with deploy(monitor/logger/rake)/api command explain.
 	#     token: necessary
 	GET /cpanel/open/process
 	````
+
+## Crash
+
+### git pull
+
+error code:
+	
+	````
+	[webmail@localhost focus_mail_agent]$ git pull 	origin master
+	Permission denied (publickey).
+	fatal: Could not read from remote repository.
+
+	Please make sure you have the correct access rights
+	and the repository exists.
+	````
+	
+solution:
+	
+	````
+	[webmail@ localhost focus_mail_agent]$ git config --local -e
+	
+	url = git@github.com:jay16/focus_mail_agent.git
+	to 
+	url = https://github.com/jay16/focus_mail_agent.git
+	````
+	
+referenced: [提交代码到 GitHub SSH 错误解决方案](!http://www.shenyanchao.cn/blog/2013/09/16/git-ssh-connection/)
+	
 	
 
 generated at 2014/12/30 by jay
-

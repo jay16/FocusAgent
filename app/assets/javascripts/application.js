@@ -26,6 +26,15 @@
     checkboxUnChecked: function(self) {
       return $(self).removeAttr("checked");
     },
+    input_operation: function(input, klass) {
+      if (App.checkboxState(input)) {
+        App.checkboxUnChecked(input);
+        return $(klass).removeClass("hidden");
+      } else {
+        App.checkboxChecked(input);
+        return $(klass).addClass("hidden");
+      }
+    },
     checkboxState1: function(self) {
       var state;
       state = $(self).attr("checked");

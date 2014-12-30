@@ -14,9 +14,11 @@
         / Collect the nav links, forms, and other content for toggling
         .collapse.navbar-collapse{role: "navigation", id:"bs-example-navbar-collapse-1"}
           %ul.nav.navbar-nav
-            %li.active= link_to "系统信息", "/cpanel"
+            %li.active= link_to "代码状态", "/cpanel/script"
+            %li= link_to "系统信息", "/cpanel"
             %li= link_to "发信日志", "/cpanel/log"
-            %li= link_to "代码状态", "/cpanel/script"
+            %li= link_to "其他日志", "/cpanel/log/other"
+            %li= link_to "文档说明", "/cpanel/doc"
           %input#navbar_right_lis{type: "hidden", value: 1}/
           %ul.nav.navbar-nav.navbar-right
             %li.dropdown

@@ -22,4 +22,7 @@ class Cpanel::HomeController < Cpanel::ApplicationController
     haml :index, layout: settings.layout
   end
 
+  get "/doc" do
+    haml :doc, layout: settings.layout
+  end
 end

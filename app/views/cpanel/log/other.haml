@@ -1,0 +1,33 @@
+.row
+  %h1 发信日志
+
+.row
+  %ul#logTab.nav.nav-tabs{:role => "tablist"}
+    %li.active{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#unicorn", :role => "tab"} unicorn
+    %li.active{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#unicorn_error", :role => "tab"} unicorn_error
+    %li{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#nohup", :role => "tab"} nohup
+    %li{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#crontab", :role => "tab"} crontab
+  :css 
+    pre { margin-top: 0px; margin-bottom: 0px; border: none; border-radius: 0px; padding: 0px 20px; min-height: 20px;}
+  .tab-content
+    #unicorn.tab-pane.active{:role => "tabpanel"}
+      - @unicorn_datas.each do |line|
+        %pre= line
+    #unicorn_error.tab-pane{:role => "tabpanel"}
+      - @error_datas.each do |line|
+        %pre= line
+    #nohup.tab-pane{:role => "tabpanel"}
+      - @nohup_datas.each do |line|
+        %pre= line
+    #crontab.tab-pane{:role => "tabpanel"}
+      - @crontab_datas.each do |line|
+        %pre= line
+
+:javascript
+  $(function () {
+    $('#logTab a:last').tab('show')
+  })

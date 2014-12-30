@@ -23,6 +23,14 @@ window.App =
   checkboxUnChecked: (self) ->
       $(self).removeAttr("checked")
 
+  input_operation: (input, klass) ->
+    if App.checkboxState(input)
+      App.checkboxUnChecked(input)
+      $(klass).removeClass("hidden")
+    else
+      App.checkboxChecked(input)
+      $(klass).addClass("hidden")
+
   checkboxState1: (self) ->
     state = $(self).attr("checked")
     if(state == undefined || state == "undefined")

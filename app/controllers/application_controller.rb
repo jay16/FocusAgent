@@ -39,11 +39,11 @@ class ApplicationController < Sinatra::Base
   # execute linux shell command
   # return array with command result
   # [execute status, execute result] 
-  def run_command(shell, whether_show_log=true)
+  def run_command(shell, whether_show_log=true, whether_reject_empty=true)
     _result = IO.popen(shell) do |stdout| 
-      stdout.reject(&:empty?) 
+        stdout.readlines#.reject(&method) 
     end.unshift($?.exitstatus.zero?)
-    if true or !_result[0] or whether_show_log
+    if !_result[0] or whether_show_log
       _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
       _status = _result[0]
       _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."

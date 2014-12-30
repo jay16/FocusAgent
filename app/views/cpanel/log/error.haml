@@ -2,4 +2,7 @@
   %h1= @errors[0]
 
 .row
-  %code= @errors[1..-1].join("\n")
+  :css 
+    pre { margin-top: 0px; margin-bottom: 0px; border: none; border-radius: 0px; padding: 0px 20px; min-height: 20px;}
+  - @errors.each do |line|
+    %pre= line

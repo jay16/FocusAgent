@@ -3,35 +3,40 @@
 port=$(test -z "$2" && echo "3456" || echo "$2")
 environment=$(test -z "$3" && echo "production" || echo "$3")
 
-echo -e "\tport: ${port} environment: ${environment}"
 unicorn=unicorn  
 config_file=./config/unicorn.rb  
 pid_file=./tmp/pids/unicorn.pid
+app_root_path=$(cat ./tmp/app_root_path)
   
 case "$1" in  
     start)  
         test -d log || mkdir log
         test -d tmp || mkdir -p tmp/pids
 
-        echo -e "\tstop nohup before start unicorn"
-        /bin/sh nohup.sh stop
+        source ~/.bashrc       > /dev/null 2>&1
+        source ~/.bash_profile > /dev/null 2>&1
+        cd ${app_root_path}
+        echo -e "\t## start unicorn"
+        echo -e "\tport: ${port}\n\tenvironment: ${environment}"
+        echo -e "\t$(ruby -v)"
 
-        echo -e "\tstart unicorn"
         bundle exec ${unicorn} -c ${config_file} -p ${port} -E ${environment} -D
-        
-        echo -e "\tstart nohup"
+        echo -e "\t unicorn start $(test $? -eq 0 && echo "successfully" || echo "failed")."
+
+        echo -e "\t## start nohup"
         /bin/sh nohup.sh start
         ;;  
     stop)  
-        echo -e "\tstop unicorn"
+        echo -e "\t## stop unicorn"
         if test -f ${pid_file} 
         then
             kill -quit `cat ${pid_file}`  
+            echo -e "\t unicorn stop $(test $? -eq 0 && echo "successfully" || echo "failed")."
         else
-            echo -e "\t[WARNGIN]: unicorn.pid not exist."
+            echo -e "\t unicorn stop failed - process not exist."
         fi
 
-        echo -e "\tstop nohup"
+        echo -e "\t## stop nohup"
         /bin/sh nohup.sh stop
         ;;  
     restart|force-reload)  

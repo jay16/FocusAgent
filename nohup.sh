@@ -12,10 +12,11 @@ case "$1" in
         if [[ $(ps -ef | grep "watch_dog.sh" | grep -v "grep" | wc -l) -eq 0 ]];
         then
             nohup /bin/sh ${app_root_path}/lib/script/watch_dog.sh ${environment} ${app_root_path} ${pool_wait_path} >> log/nohup.log 2>&1 &
+            echo -e "\t nohup start $(test $? -eq 0 && echo "successfully" || echo "failed")."
             echo $! > ${app_root_path}/tmp/pids/nohup.pid
             test -f nohup.out && rm nohup.out
         else
-            echo -e "\twarning: watch_dog.sh is already running."
+            echo -e "\t nohup start failed - process is already running."
         fi
         ;;
     stop)
@@ -24,8 +25,9 @@ case "$1" in
         if [[ $? -eq 0 ]];
         then
             kill -kill ${watchdog_pid}
+            echo -e "\t nohup stop $(test $? -eq 0 && echo "successfully" || echo "failed")."
         else
-            echo -e "\twatch_dog pid ${watchdog_pid} not exist."
+            echo -e "\t nohup stop failed - process not exist."
         fi
         ;;
     status)

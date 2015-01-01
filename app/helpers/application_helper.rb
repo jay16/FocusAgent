@@ -19,24 +19,29 @@ module ApplicationHelper
   # execute linux shell command
   # return array with command result
   # [execute status, execute result] 
-  def execute!(command, whether_show_log=true)
-    _result = IO.popen(command) do |stdout| 
-      stdout.reject(&:empty?) 
-    end.unshift($?.exitstatus.zero?)
-    if !_result[0] or whether_show_log
-      _command  = command.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
-      _status = _result[0]
-      _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
-      puts "%s\n\t\t==> %s\n%s\n" % [_command, _status, _res]
+  def run_command(shell, whether_show_log=true, whether_reject_empty=true)
+    result = IO.popen(shell) do |stdout| 
+        stdout.readlines#.reject(&method) 
+    end.map { |l| l.is_a?(String) ? string_format(l) : l }
+    status = $?.exitstatus.zero?
+    if !status or whether_show_log
+      shell  = string_format(shell).split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+      result = ["base: no output"] if result.empty?
+      resstr = result.map { |line| "\t\t" + line }.join
+      puts "%s\n\t\t==> %s\n%s\n" % [shell, status, resstr]
     end
-    return _result
+    return result.unshift(status)
   end 
+
+  def string_format(str)
+    str.gsub(ENV["APP_ROOT_PATH"], "!~")
+  end
 
   def ps_result(pid)
     # USER PID %CPU %MEM VSZ RSS TT STAT STARTED TIME COMMAND
     # 0    1   2    3    4   5   6  7    8       9    10
     command = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
-    status, *result = execute!(command)
+    status, *result = run_command(command)
 
     if result.size > 0
       result.map do |process|
@@ -58,22 +63,16 @@ module ApplicationHelper
 
   def crontab_jobs_list
     command = "cd %s && bundle exec rake crontab:list" % ENV["APP_ROOT_PATH"]
-    status, *jobs = execute!(command)
-    if jobs.empty? 
-      _status, whoami = execute!("whoami")
-      jobs = ["crontab: no jobs for %s" % whoami]
-    else
-      jobs.map! do |job|
-        job.gsub(ENV["APP_ROOT_PATH"], "!~")
-      end
-    end
+    status, *jobs = run_command(command)
+    jobs = ["crontab: no jobs for %s" % run_command("whoami")] if jobs.empty?
+    return jobs
   end
 
   def raw(html)
-    CGI.escapeHTML(html)
+    return CGI.escapeHTML(html)
   end
   def str2time(datestr, format="%Y-%m-%d %H:%M:%S")
-    DateTime.strptime(datestr, format).to_time
+    return DateTime.strptime(datestr, format).to_time
   end
 
   def pool_data_info(type, timestamp = Time.now.strftime("%Y%m%d"))

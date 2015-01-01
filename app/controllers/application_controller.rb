@@ -18,7 +18,7 @@ class ApplicationController < Sinatra::Base
   register Sinatra::Flash
 
   before do
-    @request_body = request_body
+    @request_body = request_body || ""
     request_hash = JSON.parse(@request_body) rescue {}
     @params = params.merge(request_hash)
     @params = @params.merge({ip: remote_ip, browser: remote_browser})
@@ -40,25 +40,27 @@ class ApplicationController < Sinatra::Base
   # return array with command result
   # [execute status, execute result] 
   def run_command(shell, whether_show_log=true, whether_reject_empty=true)
-    _result = IO.popen(shell) do |stdout| 
+    result = IO.popen(shell) do |stdout| 
         stdout.readlines#.reject(&method) 
-    end.unshift($?.exitstatus.zero?)
-    if !_result[0] or whether_show_log
-      _shell  = shell.gsub(ENV["APP_ROOT_PATH"], "=>").split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
-      _status = _result[0]
-      _res    = _result.length > 1 ? _result[1..-1].map { |line| "\t\t" + line }.join  : "\t\tbash: no output."
-      puts "%s\n\t\t==> %s\n%s\n" % [_shell, _status, _res]
+    end.map { |l| l.is_a?(String) ? string_format(l) : l }
+    status = $?.exitstatus.zero?
+    if !status or whether_show_log
+      shell  = string_format(shell).split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
+      result = ["base: no output"] if result.empty?
+      resstr = result.map { |line| "\t\t" + line }.join
+      puts "%s\n\t\t==> %s\n%s\n" % [shell, status, resstr]
     end
-    return _result
+    return result.unshift(status)
   end 
 
+  def string_format(str)
+    str.gsub(ENV["APP_ROOT_PATH"], "!~")
+  end
+
   def print_format_logger
-    request_info = @request_body ? %Q{Request:\n #{@request_body }} : ""
-    log_info = %Q{
-#{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}
-Parameters:\n #{@params.to_s}
-#{request_info}
-    }
+    log_info = "#{request.request_method} #{request.path} for #{request.ip} at #{Time.now.to_s}"
+    log_info << "\nParameters:\n #{@params.to_s}"
+    log_info << "\nRequest:\n #{@request_body }" unless @request_body.empty?
     puts log_info
     logger.info log_info
   end

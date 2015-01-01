@@ -181,9 +181,65 @@ solution:
 	to 
 	url = https://github.com/jay16/focus_mail_agent.git
 	````
-	
+
 referenced: [提交代码到 GitHub SSH 错误解决方案](!http://www.shenyanchao.cn/blog/2013/09/16/git-ssh-connection/)
-	
-	
+
+### linux environment 
+
+linux bash comand installed by hand, can execute in terminal but not script file
+
+  `alias | grep COMMAND`
+
+add COMMAND basepath into env[PATH] in ~/.bash_profile.
+
+  ````
+  # ~/.bash_profile
+  PATH="BASEPATH:$PATH"
+  ````
+    
+activate env[PATH].
+
+  `source ~/.bash_profile`
+
+then script file will execute successfully.
+
+**not over**
+
+it's not ok when you execute bash code through ssh!
+
+    + .bash_profile for user environment
+    + .bashrc for bash environment, .bash_profile's substitute
+
+### crontab execute base script to startup webserver
+
+1. Bundler/Unicorn/Rake Not found.
+
+reason: 
+
+  `crontab environment variable not same with user.`
+
+solution: 
+    
+  ````
+  source ~/.bashrc 
+  source ~/.bash_profile
+  ````
+
+2. gem#settinglogic abort when startup webserver
+
+abort text:
+
+  ````
+  /lib/settingslogic.rb:102:in 'read': "\xE4" on US-ASCII (Encoding::InvalidByteSequenceError)
+  ````
+reason:
+
+  around bash environment setting with character setting.
+
+solution:
+
+  ````
+  export LANG=zh_CN.UTF-8
+  ````
 
 generated at 2014/12/30 by jay

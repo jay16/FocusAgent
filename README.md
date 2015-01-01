@@ -83,3 +83,37 @@
     ├── mailtest
     └── wait
 ````
+
+### BUG
+
+#### crontab execute base script to startup webserver
+
+1. Bundler/Unicorn/Rake Not found.
+
+reason: 
+
+  `crontab environment variable not same with user.`
+
+solution: 
+    
+  ````
+  source ~/.bashrc 
+  source ~/.bash_profile
+  ````
+2. gem#settinglogic abort when startup webserver
+
+abort text:
+
+  ````
+  /lib/settingslogic.rb:102:in 'read': "\xE4" on US-ASCII (Encoding::InvalidByteSequenceError)
+  ````
+reason:
+
+  around bash environment setting with character setting.
+
+solution:
+
+  ````
+  export LANG=zh_CN.UTF-8
+  ````
+

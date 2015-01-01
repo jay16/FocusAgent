@@ -13,12 +13,10 @@ case "$1" in
         test -d log || mkdir log
         test -d tmp || mkdir -p tmp/pids
 
-        source ~/.bashrc       > /dev/null 2>&1
-        source ~/.bash_profile > /dev/null 2>&1
         cd ${app_root_path}
         echo -e "\t## start unicorn"
-        echo -e "\tport: ${port}\n\tenvironment: ${environment}"
-        echo -e "\t$(ruby -v)"
+        echo -e "\t port: ${port}\n\t environment: ${environment}"
+        echo -e "\t $(ruby -v)"
 
         bundle exec ${unicorn} -c ${config_file} -p ${port} -E ${environment} -D
         echo -e "\t unicorn start $(test $? -eq 0 && echo "successfully" || echo "failed")."

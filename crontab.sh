@@ -27,6 +27,7 @@ whether_process_restart() {
 }
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') crontab start."
+cd ${app_root_path}
 whether_process_restart ${unicorn_pid_file}  "[unicorn] - "
 unicorn_status=$?
 whether_process_restart ${watchdog_pid_file} "[nohup]   - "
@@ -34,7 +35,14 @@ watchdog_status=$?
 
 if [[ ${unicorn_status} -eq 1 || ${watchdog_status} -eq 1 ]]; 
 then
+
+    echo -e "\t=> env settings"
+    source ~/.bashrc       > /dev/null 2>&1
+    source ~/.bash_profile > /dev/null 2>&1
+    export LANG=zh_CN.UTF-8
+    echo -e "\t LANG=$LANG"
     echo -e "\t=> [restart] for above reason."
+    cd ${app_root_path}
     /bin/sh unicorn.sh stop
     /bin/sh unicorn.sh start
 else

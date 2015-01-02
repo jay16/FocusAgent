@@ -46,7 +46,7 @@ class ApplicationController < Sinatra::Base
     status = $?.exitstatus.zero?
     if !status or whether_show_log
       shell  = string_format(shell).split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
-      result = ["base: no output"] if result.empty?
+      result = ["bash: no output"] if result.empty?
       resstr = result.map { |line| "\t\t" + line }.join
       puts "%s\n\t\t==> %s\n%s\n" % [shell, status, resstr]
     end

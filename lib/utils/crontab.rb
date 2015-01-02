@@ -65,9 +65,9 @@ class Crontab
     jobs.unshift(status)
   end
 
-  def remove(command)
+  def remove(commands)
     jobs = list
-    jobs.delete_if { |job| job == command }
+    jobs -= commands #delete_if { |job| job == command }
     write_jobs_to_conf(jobs)
     
     status, *result = reload_crontab_with_new_conf

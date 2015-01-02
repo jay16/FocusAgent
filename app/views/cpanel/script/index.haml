@@ -4,10 +4,13 @@
 .row
   - process_info_datas = agent_process_info
   - usefull = [0,1,3,4,8,9]
+  :css
+    .table caption {text-align: left;}
+    .table caption h3 {display:inline-block;"}
   %table.table.table-bordered.table-condensed
-    %caption{style: "text-align: left;"}
-      %h3{style:"width:85%;display:inline-block;"} process
-      %label.lable.lable-danger
+    %caption
+      %h3 process
+      %label.lable.lable-info
         %input{:value => 1, :type => "checkbox", :onchange => "ScriptState.showCommand(this);", class: "right"} command
     %thead
       %tr
@@ -29,9 +32,9 @@
             %td= row[0]
             %td{colspan: "5"}=row[1]
   %table.table.table-bordered.table-condensed
-    %caption{style: "text-align: left;"}
-      %h3{style:"width:85%;display:inline-block;"} crontab
-      %label.lable.lable-danger
+    %caption
+      %h3 crontab
+      %label.lable.lable-info
         %input{:value => 1, :type => "checkbox", :onchange => "ScriptState.showComment(this);", class: "right"} comment
     %tbody
       - crontab_jobs_list.each do |job|
@@ -43,5 +46,12 @@
           %tr
             %td job
             %td{colspan: "5"}= job
+  %table.table.table-bordered.table-condensed
+    %caption
+      %h3 /etc/rc.d/rc.local
+    %tbody
+      - rc_local_lines.each do |line|
+        %tr
+          %td= line
 
 = javascript_include_tag "/javascripts/script_state.js"

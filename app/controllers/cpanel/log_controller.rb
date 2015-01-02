@@ -46,20 +46,19 @@ class Cpanel::LogController < Cpanel::ApplicationController
 
   # Get /log/other
   get "/other" do
-    filepath = File.join(ENV["APP_ROOT_PATH"], "log/unicorn.log")
-    @unicorn_datas = read_log_with_shell("tail -n 100 %s" % filepath)
-    filepath = File.join(ENV["APP_ROOT_PATH"], "log/unicorn_error.log")
-    @error_datas = read_log_with_shell("tail -n 100 %s" % filepath)
-    filepath = File.join(ENV["APP_ROOT_PATH"], "log/nohup.log")
-    @nohup_datas = read_log_with_shell("tail -n 50 %s" % filepath)
-    filepath = File.join(ENV["APP_ROOT_PATH"], "log/crontab.log")
-    @crontab_datas = read_log_with_shell("tail -n 50 %s" % filepath)
+    @unicorn_datas = read_log_with_shell("unicorn")
+    @error_datas = read_log_with_shell("unicorn_error")
+    @nohup_datas = read_log_with_shell("nohup")
+    @chkdog_datas = read_log_with_shell("chkdog")
+    @logarc_datas = read_log_with_shell("logarc")
 
     haml :other, layout: settings.layout
   end
 
   private
-    def read_log_with_shell(command)
+    def read_log_with_shell(logtype)
+      filepath = File.join(ENV["APP_ROOT_PATH"], "log/%s.log", logtype)
+      command = "tail -n 100 %s" % filepath
       IO.popen(command) do |stdout| 
           stdout.readlines#.reject(&method) 
       end.unshift($?.exitstatus.zero?)

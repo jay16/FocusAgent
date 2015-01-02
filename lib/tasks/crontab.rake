@@ -27,14 +27,15 @@ namespace :crontab do
   end
 
   task :remove => :crond do
-    @jobs.each do |job|
-      @crontab.remove(job)
-    end
+    @crontab.remove(@jobs + @old_jobs)
+
     puts "\ncrontab jobs list:\n"
     puts @crontab.list
   end
 
   task :jobs => :crond do
     puts @jobs
+    puts "# /etc/rc.d/rc.local"
+    puts "su - root -c 'cd /home/work/focus_mail_agent && /bin/sh crontab.sh'"
   end
 end

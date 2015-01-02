@@ -26,8 +26,7 @@ module ApplicationHelper
     status = $?.exitstatus.zero?
     if !status or whether_show_log
       shell  = string_format(shell).split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
-      result = ["base: no output"] if result.empty?
-      resstr = result.map { |line| "\t\t" + line }.join
+      resstr = (result || ["bash: no output"]).map { |line| "\t\t" + line }.join
       puts "%s\n\t\t==> %s\n%s\n" % [shell, status, resstr]
     end
     return result.unshift(status)
@@ -43,13 +42,13 @@ module ApplicationHelper
     command = "ps aux | grep %s | grep -v 'grep'" % pid.to_s.strip
     status, *result = run_command(command)
 
-    if result.size > 0
+    if result.empty?
+      ["bash: no output"]
+    else
       result.map do |process|
         user, pid, cpu, mem, vsz, rss, tt, stat, started, time, *command = process.split(/\s+/)
         [user, pid, cpu, mem, vsz, rss, tt, stat, started, time, command.join(" ").gsub(ENV["APP_ROOT_PATH"], "!~")]
       end.find { |p| p[1].strip == pid.to_s.strip }
-    else
-      ["bash: no output"]
     end
   end
 
@@ -85,6 +84,7 @@ module ApplicationHelper
       [lines[-1].split(",")[0], lines.count]
     end
   end
+
   def pool_bad_info(type, timestamp = Time.now.strftime("%Y%m%d"))
     pool_bad_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.bad, timestamp)
     if not File.exist?(pool_bad_path)
@@ -93,6 +93,12 @@ module ApplicationHelper
       files = Dir.glob(pool_data_path + "/*.csv")
       ["", files.count]
     end
+  end
+
+  def rc_local_lines
+    command = "cat /etc/rc.d/rc.local | grep %s" % ENV["APP_ROOT_PATH"]
+    status, *lines = run_command(command)
+    return lines || ["bash: no output"]
   end
 
   MOBILE_USER_AGENTS =  'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +

@@ -26,7 +26,7 @@ whether_process_restart() {
     return ${process_status};
 }
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') crontab start."
+echo "$(date '+%Y-%m-%d %H:%M:%S') ChkDog start."
 cd ${app_root_path}
 whether_process_restart ${unicorn_pid_file}  "[unicorn] - "
 unicorn_status=$?
@@ -48,4 +48,5 @@ then
 else
     echo -e "\t=> everything is [ok]"
 fi
-echo "$(date '+%Y-%m-%d %H:%M:%S') crontab completed."
+echo "$(date '+%Y-%m-%d %H:%M:%S') ChkDog completed."
+echo ""

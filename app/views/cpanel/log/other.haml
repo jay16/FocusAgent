@@ -10,7 +10,9 @@
     %li{:role => "presentation"}
       %a{"data-toggle" => "tab", :href => "#nohup", :role => "tab"} nohup
     %li{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#crontab", :role => "tab"} crontab
+      %a{"data-toggle" => "tab", :href => "#chkdog", :role => "tab"} chkdog
+    %li{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#logarc", :role => "tab"} logarc
   :css 
     pre { margin-top: 0px; margin-bottom: 0px; border: none; border-radius: 0px; padding: 0px 20px; min-height: 20px;}
   .tab-content
@@ -23,8 +25,11 @@
     #nohup.tab-pane{:role => "tabpanel"}
       - @nohup_datas.each do |line|
         %pre= line
-    #crontab.tab-pane{:role => "tabpanel"}
-      - @crontab_datas.each do |line|
+    #chkdog.tab-pane{:role => "tabpanel"}
+      - @chkdog_datas.each do |line|
+        %pre= line
+    #logarc.tab-pane{:role => "tabpanel"}
+      - @logarc_datas.each do |line|
         %pre= line
 
 :javascript

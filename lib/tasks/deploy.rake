@@ -41,7 +41,7 @@ namespace :remote do
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    agent = "mg01."
+    agent = "mg02."
     Net::SSH.start(agent+Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
       command = "cd %s && git reset --hard HEAD && git pull origin master" % remote_root_path
       execute!(ssh, command)
@@ -62,10 +62,12 @@ namespace :remote do
       execute!(ssh, command)
 
       (0..1).each do |i|
-        command = "cd %s && /bin/sh crontab.sh" % remote_root_path
+        command = "cd %s && /bin/sh chkdog.sh" % remote_root_path
         execute!(ssh, command)
       end
 
+      command = "cd %s && bundle exec rake crontab:remove" % remote_root_path
+      execute!(ssh, command)
       command = "cd %s && bundle exec rake crontab:add" % remote_root_path
       execute!(ssh, command)
     end

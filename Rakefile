@@ -21,13 +21,15 @@ task :crond do
   @jobs, @old_jobs = [], []
   @old_jobs.push "# focus_mail_agent crontab jobs - start"
   @old_jobs.push "* * * * * cd %s && /bin/sh crontab.sh >> log/crontab.log" % Dir.pwd
+  @old_jobs.push "* * * * * cd %s && /bin/sh chckdog.sh >> log/chkdog.log" % Dir.pwd
+  @jobs.push "0 12 * * * cd %s && /bin/sh logarc.sh >> log/logarc.log" % Dir.pwd
   @old_jobs.push "# focus_mail_agent crontab jobs - end" 
 
   @jobs.push "# focus_mail_agent crontab jobs - start"
   @jobs.push "# check wether focus_mail_agent and watchdog run normally."
-  @jobs.push "* * * * * cd %s && /bin/sh chckdog.sh >> log/chkdog.log" % Dir.pwd
+  @jobs.push "* * * * * cd %s && /bin/sh chkdog.sh >> log/chkdog.log 2>&1" % Dir.pwd
   @jobs.push "# archive log files"
-  @jobs.push "0 12 * * * cd %s && /bin/sh logarc.sh >> log/logarc.log" % Dir.pwd
+  @jobs.push "0 12 * * * cd %s && /bin/sh logarc.sh >> log/logarc.log 2>&1" % Dir.pwd
   @jobs.push "# focus_mail_agent crontab jobs - end" 
 end
 

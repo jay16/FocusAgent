@@ -57,7 +57,7 @@ class Cpanel::LogController < Cpanel::ApplicationController
 
   private
     def read_log_with_shell(logtype)
-      filepath = File.join(ENV["APP_ROOT_PATH"], "log/%s.log", logtype)
+      filepath = File.join(ENV["APP_ROOT_PATH"], "log/%s.log" % logtype)
       command = "tail -n 100 %s" % filepath
       IO.popen(command) do |stdout| 
           stdout.readlines#.reject(&method) 

@@ -53,5 +53,12 @@
       - rc_local_lines.each do |line|
         %tr
           %td= line
+  %table.table.table-bordered.table-condensed
+    %caption
+      %h3 ~/.bash_profile
+    %tbody
+      - bash_profile_lines.each do |line|
+        %tr
+          %td= line
 
 = javascript_include_tag "/javascripts/script_state.js"

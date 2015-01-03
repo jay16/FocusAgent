@@ -33,10 +33,7 @@
             %td.mobile-hidden= hash[:from]
             %td= hash[:to]
             %td= hash[:subject]
-            - if hash[:result] == "OK"
-              %td= hash[:result]
-            - else
-              %td= hash[:result].split.first
+            %td= simple_result(hash[:result])
         - if hash.has_key?(:result) and hash[:result] != "OK"
           %tr.danger.reason.hidden
             %td= index

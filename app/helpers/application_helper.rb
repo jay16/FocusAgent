@@ -101,6 +101,12 @@ module ApplicationHelper
     return lines || ["bash: no output"]
   end
 
+  def bash_profile_lines
+    command = "cat ~/.bash_profile | grep %s" % RUBY_VERSION
+    status, *lines = run_command(command)
+    return lines || ["bash: no output"]
+  end
+
   MOBILE_USER_AGENTS =  'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
                         'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
                         'x320|x240|j2me|sgh|portable|sprint|docomo|kddi|softbank|android|mmp|' +

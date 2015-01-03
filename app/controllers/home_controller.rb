@@ -68,8 +68,8 @@ class HomeController < ApplicationController
         now       = Time.now
         log_str   = [now.strftime("%Y/%m/%d-%H:%M:%S"), "test", filename, md5, mail_type, "blank", remote_ip, remote_browser].join(",")
         data_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.data, now.strftime("%Y%m%d"))
-        data_file =  File.join(data_path, "trigger.csv")
-        csv_file  = File.join(ENV["APP_ROOT_PATH"], "public/pool/wait", ["test", now.to_f.to_s].join("-") + ".csv")
+        data_file = File.join(data_path, "trigger.csv")
+        csv_file  = File.join(ENV["APP_ROOT_PATH"], Setting.pool.wait, ["test", now.to_f.to_s].join("-") + ".csv")
 
         [ %Q{test -d %s || mkdir -p %s} % [data_path, data_path],
           %Q{echo "%s" >> %s} % [log_str, data_file],
@@ -94,8 +94,8 @@ class HomeController < ApplicationController
         now       = Time.now
         log_str   = [now.strftime("%Y/%m/%d-%H:%M:%S"), "api", tar_name, md5, email, strftime, remote_ip, remote_browser].join(",")
         data_path = File.join(ENV["APP_ROOT_PATH"], Setting.pool.data, now.strftime("%Y%m%d"))
-        data_file =  File.join(data_path, "trigger.csv")
-        csv_file  = "%s/%s/%s" % [ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", now.to_f.to_s].join("-") + ".csv"]
+        data_file = File.join(data_path, "trigger.csv")
+        csv_file  = File.join(ENV["APP_ROOT_PATH"], Setting.pool.wait, ["api", now.to_f.to_s].join("-") + ".csv")
 
         [ %Q{test -d %s || mkdir -p %s} % [data_path, data_path],
           %Q{echo "%s" >> %s} % [log_str, data_file],

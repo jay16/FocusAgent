@@ -21,7 +21,6 @@ gem "coffee-script", "~>2.2.0"
 gem "unicorn", "~>4.8.3"
 gem "rake", "~>10.3.2"
 gem "settingslogic", "~>2.0.9"
-#gem "time_diff", "~>0.3.0"
 
 group :development do
   gem "net-ssh", "~>2.7.0"

@@ -15,3 +15,4 @@ gem install rake -v 10.3.2
 gem install net-ssh -v 2.7.0
 gem install net-scp 1.2.1
 yum install -y tree git
+chown -R webmail:webmail ./

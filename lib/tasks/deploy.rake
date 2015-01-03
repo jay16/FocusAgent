@@ -70,6 +70,8 @@ namespace :remote do
       execute!(ssh, command)
       command = "cd %s && bundle exec rake crontab:add" % remote_root_path
       execute!(ssh, command)
+      command = "cd %s && /bin/sh logarc.sh >> log/logarc.log 2>&1" % remote_root_path
+      execute!(ssh, command)
     end
   end
 end

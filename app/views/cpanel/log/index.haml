@@ -1,23 +1,22 @@
 .row
-  .col-sm-4
-    %h1 发信日志
-  .col-sm-4{style: "margin-top:43px;"}
-    %div.hidden.check-info.small{style:"text-align: right;color: gray;"} 10受影响
-  .col-sm-4.checkbox{style: "margin-top:40px;"}
-    %label.right.lable.lable-success
-      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showNormal(this);", class: "right", :checked => "checked"} Normal
-    %label.right.lable.lable-warning
-      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showRaw(this);", class: "right"} Raw
-    %label.right.lable.lable-danger
-      %input{:value => 1, :type => "checkbox", :onchange => "LogData.showReason(this);", class: "right"} Reason
+  .col-sm-8
+    %h1{style: "display: inline-block"} 发信日志
+    %span.checkbox{style: "display:inline-block;"}
+      %label.right.lable.lable-success
+        %input{:value => 1, :type => "checkbox", :onchange => "LogData.showNormal(this);", class: "right", :checked => "checked"} Normal
+      %label.right.lable.lable-warning
+        %input{:value => 1, :type => "checkbox", :onchange => "LogData.showRaw(this);", class: "right"} Raw
+      %label.right.lable.lable-danger
+        %input{:value => 1, :type => "checkbox", :onchange => "LogData.showReason(this);", class: "right"} Reason
+      %span.hidden.check-info.small{style:"text-align: right;color: gray;"} 10受影响
 
 .row
   %table.table.table-bordered
     %thead
       %tr
-        %th -
+        %th.mobile-hidden -
         %th time
-        %th from
+        %th.mobile-hidden from
         %th to
         %th subject
         %th result
@@ -29,9 +28,9 @@
             %td{colspan: "5"}= hash[:raw]
         - else
           %tr.normal
-            %td= index
+            %td.mobile-hidden= index
             %td= hash[:timestamp]
-            %td= hash[:from]
+            %td.mobile-hidden= hash[:from]
             %td= hash[:to]
             %td= hash[:subject]
             - if hash[:result] == "OK"

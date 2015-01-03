@@ -13,40 +13,16 @@ namespace :remote do
     end
   end
 
-  desc "dependency gems"
-  task :install => :environment do
-    remote_root_path = Setting.remote.app_root_path
-    local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
-    Net::SSH.start(Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
-      ["gem install haml -v 4.0.5",
-       "gem install sinatra -v 1.4.5",
-       "gem install settingslogic -v 2.0.9",
-       "gem install sinatra-contrib -v 1.4.2",
-       "gem install sinatra-flash -v 0.3.0",
-       "gem install sass -v 3.3.7",
-       "gem install unicorn -v 4.8.3",
-       "gem install rake -v 10.3.2",
-       "gem install net-ssh -v 2.7.0",
-       "gem install net-scp 1.2.1",
-       "yum install -y tree"
-      ].each do |command|
-        execute!(ssh, command)
-      end
-    end
-  end
-
   desc "scp local config files to remote server."
   task :deploy => :environment do
     remote_root_path = Setting.remote.app_root_path
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    agent = "mg02."
+    agent = "mg04."
     Net::SSH.start(agent+Setting.remote.host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
       command = "cd %s && git reset --hard HEAD && git pull origin master" % remote_root_path
       execute!(ssh, command)
-      #command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % remote_root_path
-      #execute!(ssh, command)
 
       # check whether remote server exist yaml file
       yamls.each do |yaml|
@@ -58,20 +34,24 @@ namespace :remote do
         puts "\n"
       end
 
-      command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
+      #command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
+      #execute!(ssh, command)
+
+      #(0..1).each do |i|
+      #  command = "cd %s && /bin/sh chkdog.sh" % remote_root_path
+      #  execute!(ssh, command)
+      #end
+
+      command = "cd %s && RACK_ENV=production bundle exec rake agent:deploy" % remote_root_path
       execute!(ssh, command)
-
-      (0..1).each do |i|
-        command = "cd %s && /bin/sh chkdog.sh" % remote_root_path
-        execute!(ssh, command)
-      end
-
+      command = "cd %s && RACK_ENV=production bundle exec rake agent:check" % remote_root_path
+      execute!(ssh, command)
       command = "cd %s && bundle exec rake crontab:remove" % remote_root_path
       execute!(ssh, command)
       command = "cd %s && bundle exec rake crontab:add" % remote_root_path
       execute!(ssh, command)
-      command = "cd %s && /bin/sh logarc.sh >> log/logarc.log 2>&1" % remote_root_path
-      execute!(ssh, command)
+      #command = "cd %s && /bin/sh logarc.sh >> log/logarc.log 2>&1" % remote_root_path
+      #execute!(ssh, command)
     end
   end
 end

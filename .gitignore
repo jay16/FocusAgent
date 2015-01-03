@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore bundler config
+*.swp
 *.lock
 .ruby-version
 .DS_Store

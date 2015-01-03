@@ -15,7 +15,7 @@ class Cpanel::LogController < Cpanel::ApplicationController
       file_path = File.join(Setting.mailgates.path.log, "mgmailerd.log")
       @datas = IO.readlines(file_path).map do |line|
         parse_mailgate_log(line)
-      end
+      end.reverse
     rescue => e
       @errors = e.backtrace
       @errors.unshift(e.message)
@@ -60,6 +60,9 @@ class Cpanel::LogController < Cpanel::ApplicationController
         if subject.start_with?("Returned Mail:")
           result  = result + "<br>subject: " + subject
           subject = subject.scan(/(Returned\sMail\:\s\w+)/)[0][0]
+        elsif subject.start_with?("Warning--")
+          result  = result + "<br>subject: " + subject
+          subject = "Warning#Mailgates"
         end
         return {timestamp: timestamp.split.last, emailfile: emailfile, from: from, to: to,
          subject: subject, result: result, mgham: mgham, mgtaglog: mgtaglog, charset: charset}

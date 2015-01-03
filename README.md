@@ -3,23 +3,33 @@
 ### COMMAND
 
 ```
-    # web server
-    bundle install
-    sh unicorn.sh {start|stop|restart}
+    # switch to root
+    cd app_root_path
+    /bin/sh install.sh
 
-    # crontab
-    sh crontab.sh
+    # **point**
+    # switch to webmail
+    su - webmail
 
-    # test with RSpec
-    bundle exec rspec spec/controller/
-
-    # assets generator
-    bundle exec rake cs2js:complie
-
-    # rake tasks
-    bundle exec rake agent:deploy
-    bundle exec rake agent:clear
-    bundle exec rake agent:main
+    # bundle install
+    cd app_root_path
+    bundle install --local
+    
+    # RACK_ENV for really environment
+    bundle exec rake agent:deploy RACK_ENV=production
+    bundle exec rake agent:check RACK_ENV=production
+    
+    # test with rspec can put here when necessay.
+    # rspec generate email file is not correct, 
+    # only check download/tar extract/move
+    
+    # should over when lucklly.
+    bundle exec rake crontab:remove
+    bundle exec rake crontab:add
+    tail -f log/*
+    
+    # start up with chkdog
+    /bin/sh chkdog.sh
 ```
 
 ### ROUTE
@@ -34,7 +44,7 @@
 
   # admin page
   /cpanel
-  /cpanel/open
+  /cpanel/*
 ```
 
 ### FOCUS

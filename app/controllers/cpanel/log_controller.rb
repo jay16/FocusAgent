@@ -47,10 +47,11 @@ class Cpanel::LogController < Cpanel::ApplicationController
   # Get /log/other
   get "/other" do
     @unicorn_datas = read_log_with_shell("unicorn")
-    @error_datas = read_log_with_shell("unicorn_error")
-    @nohup_datas = read_log_with_shell("nohup")
-    @chkdog_datas = read_log_with_shell("chkdog")
-    @logarc_datas = read_log_with_shell("logarc")
+    @error_datas   = read_log_with_shell("unicorn_error")
+    @nohup_datas   = read_log_with_shell("nohup")
+    @chkdog_datas  = read_log_with_shell("chkdog")
+    @logarc_datas  = read_log_with_shell("logarc")
+    @startup_datas = read_log_with_shell("startup")
 
     haml :other, layout: settings.layout
   end

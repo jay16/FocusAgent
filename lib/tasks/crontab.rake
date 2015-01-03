@@ -36,6 +36,6 @@ namespace :crontab do
   task :jobs => :crond do
     puts @jobs
     puts "# /etc/rc.d/rc.local"
-    puts "su - root -c 'cd /home/work/focus_mail_agent && /bin/sh chkdog.sh'"
+    puts "su - root -c 'cd /home/work/focus_mail_agent && /bin/sh chkdog.sh >> log/chkdog.log 2>&1'"
   end
 end

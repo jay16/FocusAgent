@@ -13,6 +13,8 @@
       %a{"data-toggle" => "tab", :href => "#chkdog", :role => "tab"} chkdog
     %li{:role => "presentation"}
       %a{"data-toggle" => "tab", :href => "#logarc", :role => "tab"} logarc
+    %li{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#startup", :role => "tab"} startup
   :css 
     pre { margin-top: 0px; margin-bottom: 0px; border: none; border-radius: 0px; padding: 0px 20px; min-height: 20px;}
   .tab-content
@@ -30,6 +32,9 @@
         %pre= line
     #logarc.tab-pane{:role => "tabpanel"}
       - @logarc_datas.each do |line|
+        %pre= line
+    #startup.tab-pane{:role => "tabpanel"}
+      - @startup_datas.each do |line|
         %pre= line
 
 :javascript

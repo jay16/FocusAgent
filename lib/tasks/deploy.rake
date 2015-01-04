@@ -19,7 +19,7 @@ namespace :remote do
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    [1,2,3,4,5].each do |index|
+    [4].each do |index|
       agent = "mg0%s." % index
       host  = agent+Setting.remote.host
       puts ""
@@ -42,8 +42,8 @@ namespace :remote do
         command = "echo 'source /usr/local/rvm/environments/ruby-1.9.2-p320' >> ~/.bash_profile"
         execute!(ssh, command)
 
-        #command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
-        #execute!(ssh, command)
+        command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
+        execute!(ssh, command)
 
         command = "cd %s && /bin/sh chkdog.sh" % remote_root_path
         execute!(ssh, command)

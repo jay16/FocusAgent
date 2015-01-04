@@ -13,7 +13,7 @@ class Cpanel::LogController < Cpanel::ApplicationController
   get "/" do
     begin
       file_path = File.join(Setting.mailgates.path.log, "mgmailerd.log")
-      @datas = IO.readlines(file_path).map do |line|
+      @datas = IO.readlines(file_path).last(100).map do |line|
         parse_mailgate_log(line)
       end.reverse
     rescue => e

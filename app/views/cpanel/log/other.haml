@@ -15,9 +15,9 @@
         %li.active{:role => "presentation"}
           %a{"data-toggle" => "tab", :href => "#unicornOne", :role => "tab"} unicorn
         %li{:role => "presentation"}
-          %a{"data-toggle" => "tab", :href => "#nohupOne", :role => "tab"} nohup rake
+          %a{"data-toggle" => "tab", :href => "#nohupOne", :role => "tab"} nohup
         %li{:role => "presentation"}
-          %a{"data-toggle" => "tab", :href => "#chkdogOne", :role => "tab"} chkdog bad
+          %a{"data-toggle" => "tab", :href => "#chkdogOne", :role => "tab"} chkdog
         %li{:role => "presentation"}
           %a{"data-toggle" => "tab", :href => "#logarc", :role => "tab"} logarc
         %li{:role => "presentation"}
@@ -41,11 +41,11 @@
     #partTwo.tab-pane{:role => "tabpanel"}
       %ul#partTwoTab.nav.nav-tabs{:role => "tablist"}
         %li{:role => "presentation"}
-          %a{"data-toggle" => "tab", :href => "#unicornTwo", :role => "tab"} unicorn error
+          %a{"data-toggle" => "tab", :href => "#unicornTwo", :role => "tab"} unicorn
         %li{:role => "presentation"}
-          %a{"data-toggle" => "tab", :href => "#nohupTwo", :role => "tab"} nohup idleness
+          %a{"data-toggle" => "tab", :href => "#nohupTwo", :role => "tab"} nohup
         %li{:role => "presentation"}
-          %a{"data-toggle" => "tab", :href => "#chkdogTwo", :role => "tab"} chkdog all
+          %a{"data-toggle" => "tab", :href => "#chkdogTwo", :role => "tab"} chkdog
       .tab-content
         #unicornTwo.tab-pane{:role => "tabpanel"}
           - read_log_with_shell("unicorn_error.log").each do |line|

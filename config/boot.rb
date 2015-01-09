@@ -73,9 +73,10 @@ pool_wait_path = File.join(app_root_path, Setting.pool.wait)
 
 # run this then startup successfully
 # record start log in log/startup.log
-ENV["DATE_STARTUP"] = Time.now.to_i.to_s #strftime("%Y-%m-%d %H:%M:%S")
+ENV["DATE_STARTUP"] = Time.now.to_i.to_s 
+ENV["DATE_STARTUP_FORMAT"] = Time.now.strftime("%Y-%m-%d %H:%M:%S")
 tmp_title = "timestamp, action, plantform, hostname"
-tmp_str   = [ENV["DATE_STARTUP"], "start", ENV["OS_PLATFORM"], ENV["OS_HOSTNAME"]].join(", ")
+tmp_str   = [ENV["DATE_STARTUP_FORMAT"], "start", ENV["OS_PLATFORM"], ENV["OS_HOSTNAME"]].join(", ")
 startup_log = "log/startup.log"
 `cd #{app_root_path} && test -f #{startup_log} || echo "#{tmp_title}" > #{startup_log}`
 `cd #{app_root_path} && echo "#{tmp_str}" >> #{startup_log}`

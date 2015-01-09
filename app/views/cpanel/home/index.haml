@@ -19,10 +19,9 @@
       %tr
         %td sysdate
         %td= Time.now.strftime("%Y/%m/%d %H:%M:%S")
-      - startup = Time.at(ENV["DATE_STARTUP"].to_i)
       %tr
         %td startup 
-        %td= startup.strftime("%Y/%m/%d %H:%M:%S") 
+        %td= ENV["DATE_STARTUP_FORMAT"]
       %tr
         %td root
         %td= ENV["APP_ROOT_PATH"] + " == !~"

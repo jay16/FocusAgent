@@ -12,4 +12,12 @@ module CpanelLogHelper
       str[0..4]
     end
   end
+
+  def read_log_with_shell(filename)
+    filepath = File.join(ENV["APP_ROOT_PATH"], "log/%s" % filename)
+    command = "tail -n 100 %s" % filepath
+    IO.popen(command) do |stdout| 
+        stdout.readlines#.reject(&method) 
+    end.unshift($?.exitstatus.zero?)
+  end
 end

@@ -3,6 +3,23 @@
 app_root_path=$(cat ./tmp/app_root_path)
 unicorn_pid_file=./tmp/pids/unicorn.pid
 watchdog_pid_file=./tmp/pids/watch_dog.pid
+logfile=./log/chkdog.log
+badfile=./log/chkdog.bad.log
+tmpfile=./tmp/.chkdog.bad.log
+
+#################################
+# check last ChkDog status start
+# redirect to chkdog.bad.log when not everything is ok
+last_start_num=$(grep -n "ChkDog start" ${logfile} | tail -1 | cut -d ":" -f 1)
+row_num=$(cat log/chkdog.log  | wc -l)
+let content_num=row_num-last_start_num+2
+tail -n ${content_num} ${logfile} > ${tmpfile} 2>&1
+if [[ $(cat ${tmpfile} | grep "everything" | wc -l) -eq 0 ]];
+then
+    cat ${tmpfile} >> ${badfile} 2>&1
+fi
+# check last ChkDog status end
+#################################
 
 whether_process_restart() {
     pid_file=$1
@@ -20,7 +37,7 @@ whether_process_restart() {
             process_status=1
         fi
     else
-        echo -e "\t#{pid_name} ${pid_file} not exist!"
+        echo -e "\t${pid_name} ${pid_file} not exist!"
         process_status=1
     fi
     return ${process_status};
@@ -35,7 +52,6 @@ watchdog_status=$?
 
 if [[ ${unicorn_status} -eq 1 || ${watchdog_status} -eq 1 ]]; 
 then
-
     echo -e "\t=> env settings"
     source ~/.bashrc       > /dev/null 2>&1
     source ~/.bash_profile > /dev/null 2>&1
@@ -50,3 +66,4 @@ else
 fi
 echo "$(date '+%Y-%m-%d %H:%M:%S') ChkDog completed."
 echo ""
+

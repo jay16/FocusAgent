@@ -19,11 +19,12 @@ namespace :remote do
     local_config_path  = "%s/config" % ENV["APP_ROOT_PATH"]
     remote_config_path = "%s/config" % remote_root_path
     yamls = Dir.entries(local_config_path).find_all { |file| File.extname(file) == ".yaml" }
-    [4].each do |index|
+    [1,2,3,4,5].each do |index|
       agent = "mg0%s." % index
       host  = agent+Setting.remote.host
       puts ""
       puts "="*10
+      puts "index: %d" % index
       puts "deal with %s" % host
       Net::SSH.start(host, Setting.remote.user, :password => Setting.remote.password) do |ssh|
         command = "cd %s && git reset --hard HEAD && git pull origin master" % remote_root_path
@@ -39,8 +40,8 @@ namespace :remote do
           puts "\n"
         end
 
-        command = "echo 'source /usr/local/rvm/environments/ruby-1.9.2-p320' >> ~/.bash_profile"
-        execute!(ssh, command)
+        #command = "echo 'source /usr/local/rvm/environments/ruby-1.9.2-p320' >> ~/.bash_profile"
+        #execute!(ssh, command)
 
         command = "cd %s && /bin/sh unicorn.sh stop" % remote_root_path
         execute!(ssh, command)

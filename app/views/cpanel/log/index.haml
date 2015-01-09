@@ -24,8 +24,8 @@
       - @datas.each_with_index do |hash, index|
         - if hash.has_key?(:raw)
           %tr.warning.raw.hidden
-            %td= index
-            %td{colspan: "5"}= hash[:raw]
+            %td.mobile-hidden= index
+            %td{colspan: "4"}= hash[:raw]
         - else
           %tr.normal
             %td.mobile-hidden= index
@@ -36,7 +36,7 @@
             %td= simple_result(hash[:result])
         - if hash.has_key?(:result) and hash[:result] != "OK"
           %tr.danger.reason.hidden
-            %td= index
-            %td{colspan: "5"}= hash[:result]
+            %td.mobile-hidden= index
+            %td{colspan: "4"}= hash[:result]
 
 = javascript_include_tag "/javascripts/log_data.js"

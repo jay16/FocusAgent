@@ -27,25 +27,10 @@ class Cpanel::LogController < Cpanel::ApplicationController
 
   # Get /log/other
   get "/other" do
-    @unicorn_datas = read_log_with_shell("unicorn")
-    @error_datas   = read_log_with_shell("unicorn_error")
-    @nohup_datas   = read_log_with_shell("nohup")
-    @chkdog_datas  = read_log_with_shell("chkdog")
-    @logarc_datas  = read_log_with_shell("logarc")
-    @startup_datas = read_log_with_shell("startup")
-
     haml :other, layout: settings.layout
   end
 
   private
-    def read_log_with_shell(logtype)
-      filepath = File.join(ENV["APP_ROOT_PATH"], "log/%s.log" % logtype)
-      command = "tail -n 100 %s" % filepath
-      IO.popen(command) do |stdout| 
-          stdout.readlines#.reject(&method) 
-      end.unshift($?.exitstatus.zero?)
-    end
-
     def parse_mailgate_log(line)
       regexp = /\[(.*?)\]\s+\[(.*?)\] Mail\.RR\s(.*?\s*->\s*.*?)\s\((.*?)\)\[(.*)\]\[(.*?)\]\[(.*?)\]\[(.*?)\]/
       line  = line.force_encoding("UTF-8")

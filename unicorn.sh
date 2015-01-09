@@ -15,7 +15,8 @@ case "$1" in
 
         cd ${app_root_path}
         echo -e "\t## start unicorn"
-        echo -e "\t port: ${port}\n\t environment: ${environment}"
+        echo -e "\t port: ${port}"
+        echo -e "\t environment: ${environment}"
         echo -e "\t $(ruby -v)"
 
         bundle exec ${unicorn} -c ${config_file} -p ${port} -E ${environment} -D

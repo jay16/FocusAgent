@@ -2,42 +2,64 @@
   %h1 其他日志
 
 .row
-  %ul#logTab.nav.nav-tabs{:role => "tablist"}
-    %li.active{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#unicorn", :role => "tab"} unicorn
-    %li.active{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#unicorn_error", :role => "tab"} unicorn_error
-    %li{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#nohup", :role => "tab"} nohup
-    %li{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#chkdog", :role => "tab"} chkdog
-    %li{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#logarc", :role => "tab"} logarc
-    %li{:role => "presentation"}
-      %a{"data-toggle" => "tab", :href => "#startup", :role => "tab"} startup
   :css 
     pre { margin-top: 0px; margin-bottom: 0px; border: none; border-radius: 0px; padding: 0px 20px; min-height: 20px;}
+  %ul#partTab.nav.nav-tabs{:role => "tablist"}
+    %li.active{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#partOne", :role => "tab"} partOne
+    %li{:role => "presentation"}
+      %a{"data-toggle" => "tab", :href => "#partTwo", :role => "tab"} partTwo
   .tab-content
-    #unicorn.tab-pane.active{:role => "tabpanel"}
-      - @unicorn_datas.each do |line|
-        %pre= line
-    #unicorn_error.tab-pane{:role => "tabpanel"}
-      - @error_datas.each do |line|
-        %pre= line
-    #nohup.tab-pane{:role => "tabpanel"}
-      - @nohup_datas.each do |line|
-        %pre= line
-    #chkdog.tab-pane{:role => "tabpanel"}
-      - @chkdog_datas.each do |line|
-        %pre= line
-    #logarc.tab-pane{:role => "tabpanel"}
-      - @logarc_datas.each do |line|
-        %pre= line
-    #startup.tab-pane{:role => "tabpanel"}
-      - @startup_datas.each do |line|
-        %pre= line
+    #partOne.tab-pane.active{:role => "tabpanel"}
+      %ul#partOneTab.nav.nav-tabs{:role => "tablist"}
+        %li.active{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#unicornOne", :role => "tab"} unicorn
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#nohupOne", :role => "tab"} nohup rake
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#chkdogOne", :role => "tab"} chkdog bad
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#logarc", :role => "tab"} logarc
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#startup", :role => "tab"} startup
+      .tab-content
+        #unicornOne.tab-pane.active{:role => "tabpanel"}
+          - read_log_with_shell("unicorn.log").each do |line|
+            %pre= line
+        #nohupOne.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("rake.log").each do |line|
+            %pre= line
+        #chkdogOne.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("chkdog.bad.log").each do |line|
+            %pre= line
+        #logarc.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("logarc.log").each do |line|
+            %pre= line
+        #startup.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("startup.log").each do |line|
+            %pre= line
+    #partTwo.tab-pane{:role => "tabpanel"}
+      %ul#partTwoTab.nav.nav-tabs{:role => "tablist"}
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#unicornTwo", :role => "tab"} unicorn error
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#nohupTwo", :role => "tab"} nohup idleness
+        %li{:role => "presentation"}
+          %a{"data-toggle" => "tab", :href => "#chkdogTwo", :role => "tab"} chkdog all
+      .tab-content
+        #unicornTwo.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("unicorn_error.log").each do |line|
+            %pre= line
+        #nohupTwo.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("nohup.log").each do |line|
+            %pre= line
+        #chkdogTwo.tab-pane{:role => "tabpanel"}
+          - read_log_with_shell("chkdog.log").each do |line|
+            %pre= line
 
 :javascript
   $(function () {
-    $('#logTab a:last').tab('show')
+    $('#partTab a:first').tab('show')
+    $('#partOneTab a:first').tab('show')
+    $('#partTwoTab a:first').tab('show')
   })

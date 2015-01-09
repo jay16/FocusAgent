@@ -171,6 +171,14 @@ agent server with deploy(monitor/logger/rake)/api command explain.
     # params:
     #     token: necessary
     GET /cpanel/open/process
+
+
+    # get mailgates log content from line_number 
+    # params:
+    #     token: necessary
+    #     filename: optional,default "mgmailerd.log"
+    #     line_number: necessary, more +line_number log_file
+    get "/log/line_number" do
     ````
 
 ## Crash
@@ -269,3 +277,4 @@ solution:
 
 +. generated at 2014/12/30 by jay
 +. updated at 2015/01/03 by jay
++. updated at 2015/01/09 by jay

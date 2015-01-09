@@ -48,6 +48,37 @@ class Cpanel::OpenController < Cpanel::ApplicationController
       end
     end
   end
+	# get mailgates log content from line_number 
+	# params:
+	#     token: necessary
+	#     filename: optional,default "mgmailerd.log"
+  #     line_number: necessary, more +line_number log_file
+  get "/log/line_number" do
+    if (params[:token] || "token") != Setting.open.token
+      hash = { code: 401, info: "token is not correct!" }
+      respond_with_json hash, 401
+    elsif params[:line_number].nil?
+      hash = { code: 501, info: "line_number is necessary" }
+      respond_with_json hash, 501
+    else
+      file_name = params[:filename] || "mgmailerd.log" 
+      file_path = File.join(Setting.mailgates.path.log, file_name)
+      if File.exist?(file_path)
+        command = "wc -l %s" % file_path
+        file_line_number = run_command(command)[1].split.first.to_i rescue 0
+        from_line_number = params[:line_number].to_i rescue 0
+        tail_line_number = file_line_number - from_line_number
+        tail_line_number = 0 if tail_line_number < 0
+
+        command = "tail -n %d %s" % [tail_line_number, file_path]
+        result = run_command(command)
+        hash = { code: 1, info: "ok", data: result }
+      else
+        hash = { code: -1, info: "log file not exist" }
+      end
+        respond_with_json hash, 200, false
+    end
+  end
 
 	# download mailgates archived log file
 	# params:

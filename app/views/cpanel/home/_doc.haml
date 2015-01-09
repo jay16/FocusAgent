@@ -179,6 +179,14 @@
       # params:
       #     token: necessary
       GET /cpanel/open/process
+      
+      
+      # get mailgates log content from line_number 
+      # params:
+      #     token: necessary
+      #     filename: optional,default "mgmailerd.log"
+      #     line_number: necessary, more +line_number log_file
+      get "/log/line_number" do
       ````
 %h2 Crash
 %h3 git pull
@@ -279,5 +287,7 @@
       ````
       export LANG=zh_CN.UTF-8
       ````
-%p generated at 2014/12/30 by jay
-%p updated at 2015/01/03 by jay
+%p
+  +. generated at 2014/12/30 by jay
+  +. updated at 2015/01/03 by jay
+  +. updated at 2015/01/09 by jay

@@ -108,6 +108,7 @@
   });
 
   $(function() {
+    var header;
     NProgress.start();
     App.resizeWindow();
     NProgress.set(0.2);
@@ -117,6 +118,16 @@
     NProgress.set(0.8);
     App.initBootstrapNavbarLi();
     NProgress.done(true);
+    header = new Headroom(document.querySelector("nav"), {
+      tolerance: 5,
+      offset: 205,
+      classes: {
+        initial: "animated",
+        pinned: "slideDown",
+        unpinned: "slideUp"
+      }
+    });
+    header.init();
     return $("input[type=checkbox]").bind("change", function() {
       if (App.checkboxState(this)) {
         return App.checkboxUnChecked(this);

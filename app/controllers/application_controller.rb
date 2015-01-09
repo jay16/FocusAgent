@@ -47,7 +47,11 @@ class ApplicationController < Sinatra::Base
     if !status or whether_show_log
       shell  = string_format(shell).split(/\n/).map { |line| "\t`" + line + "`" }.join("\n")
       result = ["bash: no output"] if result.empty?
-      resstr = result.map { |line| "\t\t" + line }.join
+      if result.length > 100
+        resstr = "\t\tbash: output line number more than 100 rows."
+      else
+        resstr = result.map { |line| "\t\t" + line }.join
+      end
       puts "%s\n\t\t==> %s\n%s\n" % [shell, status, resstr]
     end
     return result.unshift(status)
@@ -85,8 +89,8 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  def respond_with_json hash, code = nil
-    hash.perfect!
+  def respond_with_json hash, code = nil, whether_perfect = true
+    hash.perfect! if whether_perfect
     raise "code is necessary!" unless hash.has_key?(:code)
     content_type "application/json"
     body   hash.to_json

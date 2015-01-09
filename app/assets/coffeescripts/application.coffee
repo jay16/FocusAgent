@@ -103,6 +103,17 @@ $ ->
   App.initBootstrapNavbarLi()
   NProgress.done(true)
 
+  # Headroom.js
+  header = new Headroom(document.querySelector("nav"), 
+    tolerance: 5
+    offset: 205
+    classes:
+      initial: "animated"
+      pinned: "slideDown"
+      unpinned: "slideUp"
+  )
+  header.init()
+
   $("input[type=checkbox]").bind "change", ->
     if App.checkboxState(this)
       App.checkboxUnChecked(this)

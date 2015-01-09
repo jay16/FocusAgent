@@ -49,7 +49,7 @@ namespace :agent do
       shell = "rm -rf %s/*" % @options[key]
       execute!(shell)
     end
-    puts execute!(%Q{tree -L 2 %s | grep -vE "tar|csv"} % base_on_root_path("public"))
+    puts execute!(%Q{tree -L 4 %s | grep -vE "tar|csv"} % base_on_root_path("public"))
   end
 
   desc "task - mkdir necessary directory paths"
@@ -82,7 +82,7 @@ namespace :agent do
 
     command = "cd %s && chown -R webmail:webmail ./ && chmod -R 777 ./" % @options[:app_root_path]
     execute!(command)
-    puts execute!(%Q{tree -L 2 %s | grep -vE "tar|csv"} % base_on_root_path("public"))
+    puts execute!(%Q{tree -L 4 %s | grep -vE "tar|csv"} % base_on_root_path("public"))
   end
 
   def download_email_from_server(options)
